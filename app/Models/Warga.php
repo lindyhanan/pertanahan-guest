@@ -1,0 +1,23 @@
+<?php
+
+namespace App\Models;
+
+use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Model;
+
+class Warga extends Model
+{
+    use HasFactory;
+
+    protected $table = 'data_warga';
+
+    protected $fillable = [
+        'nama',
+        'no_ktp',
+        'jenis_kelamin',
+        'agama',
+        'pekerjaan',
+        'telp',
+        'email',
+    ];
+}
