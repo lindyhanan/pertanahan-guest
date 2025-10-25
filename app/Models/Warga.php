@@ -10,7 +10,7 @@ class Warga extends Model
     use HasFactory;
 
     protected $table = 'data_warga';
-
+    protected $primaryKey = 'warga_id';
     protected $fillable = [
         'nama',
         'no_ktp',

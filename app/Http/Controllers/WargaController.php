@@ -12,7 +12,8 @@ class WargaController extends Controller
      */
     public function index()
     {
-        
+        $warga = Warga::all();
+        return view('warga.index', compact('warga'));
     }
 
     /**
@@ -20,7 +21,8 @@ class WargaController extends Controller
      */
     public function create()
     {
-        return view('warga.create');
+        $warga = Warga::latest()->get();
+        return view('warga.index', compact('warga'));
     }
 
     /**
@@ -40,7 +42,8 @@ class WargaController extends Controller
 
         Warga::create($validated);
 
-        return redirect()->route('warga.create')->with('success', 'Data Warga Berhasil Disimpan!');
+        return redirect()->back()->with('success', 'Data warga berhasil ditambahkan!');
+
     }
 
     /**

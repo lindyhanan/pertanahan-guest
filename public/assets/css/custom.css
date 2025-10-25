@@ -1,0 +1,28 @@
+/* ==== FIX HEADER POSISI ATAS ==== */
+.main-header {
+  position: fixed !important;
+  top: 0;
+  left: 250px; /* sesuaikan dengan lebar sidebar */
+  right: 0;
+  z-index: 1001;
+  width: calc(100% - 250px);
+  background: #ffffff;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+}
+
+/* ==== SUPAYA KONTEN NGGAK KETIMPA HEADER ==== */
+.main-panel {
+  margin-left: 250px; /* biar sejajar dengan sidebar */
+}
+
+.main-panel .page-inner {
+  margin-top: 110px; /* dorong isi ke bawah header */
+}
+
+/* ==== SIDEBAR TETAP NEMPEL KIRI ==== */
+.sidebar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  height: 100%;
+}

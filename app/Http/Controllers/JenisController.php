@@ -12,10 +12,10 @@ class JenisController extends Controller
      */
     public function index()
     {
-        $dataPertanahan = Pertanahan::all();
+        $dataJenis = Jenis::all();
 
         // Kirim ke view
-        return view('create', compact('dataPertanahan'));
+        return view('', compact('dataPertanahan'));
     }
 
     /**
@@ -24,7 +24,7 @@ class JenisController extends Controller
     public function create()
     {
         $jenis_penggunaan = Jenis::all();
-        return view('pertanahan.create', compact('jenis_penggunaan'));
+        return view('pertanahan.dashboard', compact('jenis_penggunaan'));
     }
 
     /**
@@ -39,7 +39,7 @@ class JenisController extends Controller
 		
 		Jenis::create($data);
 		
-		return redirect()->route('jenis.create')->with('success','Penambahan Data Berhasil!');
+		return redirect()->route('jenis.dashboard')->with('success','Penambahan Data Berhasil!');
     }
 
     /**
