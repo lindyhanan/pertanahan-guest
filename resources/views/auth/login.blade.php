@@ -1,6 +1,5 @@
 @extends('layouts.pertanahan.auth')
 
-
 @section('content')
 <div class="card shadow-lg p-4" style="width: 400px; border-radius: 15px;">
     <h3 class="text-center mb-4">Login</h3>

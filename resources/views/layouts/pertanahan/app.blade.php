@@ -7,7 +7,6 @@
 
 <body>
     <div class="wrapper">
-  @include('layouts.pertanahan.sidebar')
 
   <div class="main-panel">
     @include('layouts.pertanahan.header')
