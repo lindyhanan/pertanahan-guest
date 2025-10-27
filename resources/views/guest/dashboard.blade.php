@@ -2,8 +2,12 @@
 
 @section('content')
 <!-- Hero Section -->
+
 <section class="hero position-relative" style="background: url('{{ asset('assets/img/contoh2.jpg') }}') center/cover no-repeat; height: 80vh;">
-  <div class="overlay position-absolute top-0 start-0 w-100 h-100" style="background: rgba(0,0,0,0.55);"></div>
+  <!-- Tombol WhatsApp Mengambang -->
+
+
+    <div class="overlay position-absolute top-0 start-0 w-100 h-100" style="background: rgba(0,0,0,0.55);"></div>
   <div class="container h-100 d-flex flex-column justify-content-center align-items-center text-center text-white position-relative">
       <h1 class="fw-bold display-4 animate__animated animate__fadeInDown">Selamat Datang di Sistem Pertanahan</h1>
       <p class="lead mt-3 mb-4 animate__animated animate__fadeInUp" style="max-width: 700px;">
@@ -128,9 +132,9 @@
                   <div class="col-md-5">
                       <div class="card border-0 shadow-sm rounded-4 h-100">
                           <div class="card-body p-3">
-                              <img src="{{ asset('assets/img/contoh1.jpg') }}" 
-                                   alt="Pertanahan 1" 
-                                   class="img-fluid rounded-4" 
+                              <img src="{{ asset('assets/img/contoh1.jpg') }}"
+                                   alt="Pertanahan 1"
+                                   class="img-fluid rounded-4"
                                    style="object-fit: cover; height: 280px; width: 100%;">
                           </div>
                       </div>
@@ -140,9 +144,9 @@
                   <div class="col-md-5">
                       <div class="card border-0 shadow-sm rounded-4 h-100">
                           <div class="card-body p-3">
-                              <img src="{{ asset('assets/img/contoh3.jpg') }}" 
-                                   alt="Pertanahan 2" 
-                                   class="img-fluid rounded-4" 
+                              <img src="{{ asset('assets/img/contoh3.jpg') }}"
+                                   alt="Pertanahan 2"
+                                   class="img-fluid rounded-4"
                                    style="object-fit: cover; height: 280px; width: 100%;">
                           </div>
                       </div>
@@ -202,13 +206,18 @@
           </div>
 
           <div class="mt-5">
-              <iframe 
-                  src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3952.354524739826!2d110.3680579152567!3d-7.847713394346404!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x2e7a57df02c8c0e3%3A0x6f2cf53da69e1e33!2sKantor%20Pertanahan!5e0!3m2!1sen!2sid!4v1673023456123!5m2!1sen!2sid" 
-                  width="100%" height="350" style="border:0; border-radius:15px;" 
+              <iframe
+                  src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3952.354524739826!2d110.3680579152567!3d-7.847713394346404!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x2e7a57df02c8c0e3%3A0x6f2cf53da69e1e33!2sKantor%20Pertanahan!5e0!3m2!1sen!2sid!4v1673023456123!5m2!1sen!2sid"
+                  width="100%" height="350" style="border:0; border-radius:15px;"
                   allowfullscreen="" loading="lazy">
               </iframe>
           </div>
       </div>
   </div>
 </section>
+<div id="whatsapp-button">
+    <a href="https://api.whatsapp.com/send?phone=6281234567890" target="_blank">
+        <img src="https://upload.wikimedia.org/wikipedia/commons/5/5e/WhatsApp_icon.png" alt="WhatsApp">
+    </a>
+</div>
 @endsection

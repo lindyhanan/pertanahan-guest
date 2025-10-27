@@ -6,11 +6,6 @@
       content="width=device-width, initial-scale=1.0, shrink-to-fit=no"
       name="viewport"
     />
-    <link
-      rel="icon"
-      href="{{ asset('assets/img')}}/kaiadmin/favicon.ico"
-      type="image/x-icon"
-    />
 
     <!-- Fonts and icons -->
     <script src="{{ asset('assets/js')}}/plugin/webfont/webfont.min.js"></script>
@@ -38,10 +33,12 @@
 
 
   </head>
-
-<!-- Tambahkan ini untuk memperluas tampilan full width -->
 <style>
-
+.hover-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 6px 16px rgba(0,0,0,0.15);
+    transition: all 0.3s ease;
+}
     .navbar-nav .nav-link {
         transition: all 0.3s ease;
         display: flex;

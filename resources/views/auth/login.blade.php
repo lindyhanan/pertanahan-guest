@@ -18,6 +18,7 @@
             <label>Password</label>
             <input type="password" name="password" class="form-control" placeholder="Masukkan password" required>
         </div>
+        <a href="{{route('user.create')}}"><center>Buat Akun</center></a>
         <button type="submit" class="btn btn-primary w-100">Login</button>
     </form>
 </div>
