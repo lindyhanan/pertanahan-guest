@@ -41,6 +41,9 @@
                             <a class="dropdown-item" href="{{ route('penggunaan.index') }}">
                                 <i data-feather="folder" class="me-2 text-success"></i> Data Penggunaan
                             </a>
+                            <a class="dropdown-item" href="{{ route('penggunaan.create') }}">
+                                <i data-feather="folder" class="me-2 text-success"></i> Tambah Penggunaan
+                            </a>
                         </li>
                     </ul>
                 </li>
@@ -111,7 +114,7 @@
                     </li>
                 @else
                     <li class="nav-item ms-lg-3 d-flex align-items-center">
-                        <a href="{{ route('user.create') }}"
+                        <a href="{{ route('login') }}"
                             class="nav-link text-white fw-semibold px-3 d-flex align-items-center">
                             <i data-feather="user" class="me-2"></i>
                             <span>Profile</span>

@@ -1,4 +1,4 @@
-@extends('layouts.pertanahan.auth')
+@extends('layouts.guest.auth')
 
 @section('content')
 <div class="card shadow-lg p-4" style="width: 400px; border-radius: 15px;">
@@ -8,7 +8,7 @@
         <div class="alert alert-danger">{{ session('error') }}</div>
     @endif
 
-    <form action="{{ route('login.post') }}" method="POST">
+    <form action="{{route('dashboard')}}" method="POST">
         @csrf
         <div class="form-group mb-3">
             <label>Email</label>

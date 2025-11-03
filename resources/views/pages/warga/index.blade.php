@@ -1,4 +1,4 @@
-@extends('layouts.pertanahan.app')
+@extends('layouts.guest.app')
 
 @section('content')
     <div class="content-wrapper py-4">

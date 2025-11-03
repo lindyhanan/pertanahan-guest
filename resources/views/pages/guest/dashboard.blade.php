@@ -1,4 +1,4 @@
-@extends('layouts.pertanahan.app')
+@extends('layouts.guest.app')
 
 @section('content')
 <!-- Hero Section -->

@@ -18,6 +18,6 @@ class AboutController extends Controller
             'content' => 'Ini adalah aplikasi manajemen data pertanahan dan warga yang dibuat untuk memudahkan administrasi secara digital. Aplikasi ini menggunakan Laravel + Bootstrap dan desain konsisten dengan dashboard lain.'
         ];
 
-        return view('about.index', compact('about'));
+        return view('pages.about.index', compact('about'));
     }
 }

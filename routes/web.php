@@ -23,7 +23,7 @@ Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 Route::resource('user', UserController::class);
 
 Route::get('/', function () {
-    return view('guest.dashboard');
+    return view('pages.guest.dashboard');
 })->name('dashboard');
 
 Route::get('/pertanahan', [PertanahanController::class, 'index']);

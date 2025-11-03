@@ -14,7 +14,7 @@ class AuthController extends Controller
             return redirect()->route('dashboard');
         }
 
-        return view('auth.login');
+        return view('pages.auth.login');
     }
 
     // proses login
@@ -41,7 +41,7 @@ class AuthController extends Controller
     }
     public function showLoginForm()
     {
-        return view('auth.login'); // ganti dengan view loginmu
+        return view('pages.auth.login'); // ganti dengan view loginmu
     }
 
 }

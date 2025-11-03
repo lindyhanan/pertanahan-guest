@@ -20,7 +20,7 @@ class PenggunaanController extends Controller
 
         $data_penggunaan = $query->orderBy('created_at', 'desc')->get();
 
-        return view('penggunaan.index', compact('data_penggunaan'));
+        return view('pages.penggunaan.index', compact('data_penggunaan'));
     }
 
     /**
@@ -28,7 +28,7 @@ class PenggunaanController extends Controller
      */
     public function create()
     {
-        //
+        return view('pages.penggunaan.create');
     }
 
     /**
@@ -43,7 +43,7 @@ class PenggunaanController extends Controller
 
         Penggunaan::create($request->all());
 
-        return redirect()->route('penggunaan.index')->with('success', 'Data penggunaan berhasil ditambahkan!');
+        return redirect()->route('pages.penggunaan.index')->with('success', 'Data penggunaan berhasil ditambahkan!');
     }
 
     /**
