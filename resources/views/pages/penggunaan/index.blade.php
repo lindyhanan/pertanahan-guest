@@ -25,7 +25,7 @@
                                     <hr class="my-3">
 
                                     <div class="d-flex justify-content-between align-items-center">
-                                        <a href="{{ route('penggunaan.edit', $item->jenis_id) }}"
+                                        <a href="{{ route('penggunaan.edit', ['penggunaan' => $item->jenis_id]) }}"
                                             class="btn btn-sm btn-outline-success rounded-pill d-flex align-items-center gap-1 px-3">
                                             <i data-feather="edit-3"></i> <span>Edit</span>
                                         </a>

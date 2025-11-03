@@ -56,8 +56,11 @@
                     </a>
                     <ul class="dropdown-menu shadow-sm border-0 rounded-3 custom-dropdown" aria-labelledby="Warga">
                         <li>
-                            <a class="dropdown-item" href="{{ route('warga.create') }}">
+                            <a class="dropdown-item" href="{{ route('warga.index') }}">
                                 <i data-feather="user-plus" class="me-2 text-success"></i> Data Warga
+                            </a>
+                            <a class="dropdown-item" href="{{ route('warga.create') }}">
+                                <i data-feather="user-plus" class="me-2 text-success"></i> Tambah Warga
                             </a>
                         </li>
                     </ul>

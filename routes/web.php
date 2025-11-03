@@ -19,7 +19,8 @@ Route::get('/about', [AboutController::class, 'index'])->name('about');
 
 Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 // halaman dashboard (setelah login)
-
+Route::get('/penggunaan/edit', [PenggunaanController::class, 'edit'])->name('penggunaan.edit');
+Route::post('/penggunaan/edit', [PenggunaanController::class, 'update'])->name('penggunaan.update');
 Route::resource('user', UserController::class);
 
 Route::get('/', function () {

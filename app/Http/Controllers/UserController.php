@@ -44,7 +44,7 @@ class UserController extends Controller
 
         User::create($data);
 
-        return redirect()->route('user.index')->with('success', 'User berhasil ditambahkan.');
+        return redirect()->route('pages.user.index')->with('success', 'User berhasil ditambahkan.');
     }
 
     /**
@@ -53,7 +53,7 @@ class UserController extends Controller
     public function edit($id)
     {
         $user = User::findOrFail($id);
-        return view('user.edit', compact('user'));
+        return view('pages.user.edit', compact('user'));
     }
 
     /**

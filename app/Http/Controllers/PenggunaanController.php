@@ -1,9 +1,8 @@
 <?php
-
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
 use App\Models\Penggunaan;
+use Illuminate\Http\Request;
 
 class PenggunaanController extends Controller
 {
@@ -38,7 +37,7 @@ class PenggunaanController extends Controller
     {
         $request->validate([
             'nama_penggunaan' => 'required|string|max:50|unique:penggunaan,nama_penggunaan',
-            'keterangan' => 'required|string|max:200',
+            'keterangan'      => 'required|string|max:200',
         ]);
 
         Penggunaan::create($request->all());
@@ -59,17 +58,24 @@ class PenggunaanController extends Controller
      */
     public function edit(string $id)
     {
-        //
+        $penggunaan = Penggunaan::first(); // ambil data pertama dulu
+        return view('pages.penggunaan.edit', compact('penggunaan'));
     }
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, string $id)
+    public function update(Request $request)
     {
-        //
-    }
+        $penggunaan = Penggunaan::findOrFail($request->id);
 
+        $penggunaan->update([
+            'nama_penggunaan' => $request->nama_penggunaan,
+            'keterangan'      => $request->keterangan,
+        ]);
+
+        return redirect()->route('penggunaan.index')->with('success', 'Data berhasil diperbarui.');
+    }
     /**
      * Remove the specified resource from storage.
      */
