@@ -47,7 +47,22 @@
                         </li>
                     </ul>
                 </li>
-
+                <li class="nav-item dropdown position-relative">
+                    <a class="nav-link dropdown-toggle text-white fw-semibold px-3" href="#" id="menuPersil"
+                        role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                        <i data-feather="file-text" class="me-1"></i> Persil
+                    </a>
+                    <ul class="dropdown-menu shadow-sm border-0 rounded-3 custom-dropdown" aria-labelledby="menuPersil">
+                        <li>
+                            <a class="dropdown-item" href="{{ route('persil.index') }}">
+                                <i data-feather="file" class="me-2 text-success"></i> Data Persil
+                            </a>
+                            <a class="dropdown-item" href="{{ route('persil.create') }}">
+                                <i data-feather="file-plus" class="me-2 text-success"></i> Tambah Persil
+                            </a>
+                        </li>
+                    </ul>
+                </li>
                 {{-- Warga --}}
                 <li class="nav-item dropdown position-relative">
                     <a class="nav-link dropdown-toggle text-white fw-semibold px-3" href="#" id="Warga"
@@ -90,7 +105,8 @@
                 @auth
                     <li class="nav-item dropdown ms-lg-3 d-flex align-items-center">
                         <a class="nav-link dropdown-toggle text-white d-flex align-items-center fw-semibold px-3"
-                            href="#" id="menuProfile" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            href="#" id="menuProfile" role="button" data-bs-toggle="dropdown"
+                            aria-expanded="false">
                             <img src="https://ui-avatars.com/api/?name={{ urlencode(Auth::user()->name) }}&background=6b8e23&color=fff&size=32"
                                 alt="Profile" class="rounded-circle me-2 border border-light" width="32"
                                 height="32">

@@ -6,6 +6,7 @@ use App\Http\Controllers\UserController;
 use App\Http\Controllers\AboutController;
 use App\Http\Controllers\JenisController;
 use App\Http\Controllers\WargaController;
+use App\Http\Controllers\PersilController;
 use App\Http\Controllers\PenggunaanController;
 use App\Http\Controllers\PertanahanController;
 
@@ -31,3 +32,5 @@ Route::get('/pertanahan', [PertanahanController::class, 'index']);
 
 Route::get('/auth', [AuthController::class, 'index']);
 Route::post('/auth/login', [AuthController::class, 'login']);
+
+Route::resource('persil', PersilController::class);
