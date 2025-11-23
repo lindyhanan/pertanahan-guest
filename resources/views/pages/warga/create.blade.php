@@ -57,6 +57,15 @@
                                                 required placeholder="Nama lengkap sesuai KTP">
                                         </div>
 
+                                        {{-- Alamat --}}
+                                        <div class="col-12 mb-3">
+                                            <label class="form-label fw-semibold text-secondary">Alamat <span
+                                                    class="text-danger">*</span></label>
+                                            <input type="text" name="alamat" class="form-control border-success-subtle"
+                                                value="{{ old('alamat') }}" required
+                                                placeholder="Contoh: Jl. Kenanga No. 5, RT/RW, Desa/Kelurahan">
+                                        </div>
+
                                         {{-- Jenis Kelamin --}}
                                         <div class="col-md-6 mb-3">
                                             <label class="form-label fw-semibold text-secondary">Jenis Kelamin <span
@@ -102,7 +111,8 @@
                                             <label class="form-label fw-semibold text-secondary">Email <span
                                                     class="text-danger">*</span></label>
                                             <input type="email" name="email" class="form-control border-success-subtle"
-                                                value="{{ old('email') }}" required placeholder="Contoh: nama@example.com">
+                                                value="{{ old('email') }}" required
+                                                placeholder="Contoh: nama@example.com">
                                         </div>
 
                                     </div>

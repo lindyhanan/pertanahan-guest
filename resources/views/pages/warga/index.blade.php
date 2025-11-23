@@ -14,6 +14,26 @@
                     </div>
                 @endif
 
+                <form method="GET" action="{{ route('warga.index') }}" class="mb-4 row g-2 align-items-center">
+                    <div class="col-md-4">
+                        <input type="text" name="search" class="form-control"
+                            placeholder="Cari nama, pekerjaan, atau email..." value="{{ $search ?? '' }}">
+                    </div>
+                    <div class="col-md-3">
+                        <select name="jenis_kelamin" class="form-select">
+                            <option value="">Semua Jenis Kelamin</option>
+                            <option value="Laki-laki" {{ ($jenis_kelamin ?? '') == 'Laki-laki' ? 'selected' : '' }}>
+                                Laki-laki</option>
+                            <option value="Perempuan" {{ ($jenis_kelamin ?? '') == 'Perempuan' ? 'selected' : '' }}>
+                                Perempuan</option>
+                        </select>
+                    </div>
+                    <div class="col-md-2 d-flex gap-2">
+                        <button class="btn btn-success" type="submit">Terapkan</button>
+                        <a href="{{ route('warga.index') }}" class="btn btn-outline-secondary">Reset</a>
+                    </div>
+                </form>
+
                 <div class="d-flex justify-content-end align-items-center mb-3 gap-2">
                     <a href="{{ route('warga.create') }}" class="btn rounded-pill d-flex align-items-center gap-1 px-3"
                         style="background-color:#388e3c; color:white;">
@@ -24,9 +44,6 @@
                         <i data-feather="arrow-left"></i> <span>Kembali</span>
                     </a>
                 </div>
-
-
-                
 
                 {{-- LIST DATA WARGA --}}
                 <div class="row">
@@ -48,9 +65,11 @@
 
                                     <p class="text-muted small mb-1"><i data-feather="credit-card"
                                             class="me-2 text-secondary"></i>{{ $item->no_ktp }}</p>
+                                    <p class="text-muted small mb-3"><i data-feather="map-pin"
+                                            class="me-2 text-secondary"></i>{{ $item->alamat }}</p> {{-- ALAMAT TAMBAHAN --}}
                                     <p class="text-muted small mb-1"><i data-feather="phone"
                                             class="me-2 text-secondary"></i>{{ $item->telp }}</p>
-                                    <p class="text-muted small mb-3"><i data-feather="mail"
+                                    <p class="text-muted small mb-1"><i data-feather="mail"
                                             class="me-2 text-secondary"></i>{{ $item->email }}</p>
 
                                     <hr class="my-3">
@@ -84,6 +103,9 @@
                             <p class="fs-5">Belum ada data warga.</p>
                         </div>
                     @endforelse
+                </div>
+                <div class="d-flex justify-content-center mt-4">
+                    {{ $warga->links('pagination::bootstrap-5') }}
                 </div>
             </div>
         </section>

@@ -1,5 +1,4 @@
 <?php
-
 namespace App\Http\Controllers;
 
 use App\Models\Persil;
@@ -10,10 +9,28 @@ class PersilController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
-        $persil = Persil::all();
-        return view('pages/persil.index', compact('persil'));
+        $search  = $request->query('search');
+        $pemilik = $request->query('pemilik');
+        $alamat  = $request->query('alamat');
+
+        $persil = Persil::query()
+            ->when($search, function ($query, $search) {
+                $query->where('kode_persil', 'like', "%{$search}%")
+                    ->orWhere('alamat_lahan', 'like', "%{$search}%");
+            })
+            ->when($pemilik, function ($query, $pemilik) {
+                $query->where('pemilik_warga_id', $pemilik);
+            })
+            ->when($alamat, function ($query, $alamat) {
+                $query->where('alamat_lahan', 'like', "%{$alamat}%");
+            })
+            ->orderBy('kode_persil')
+            ->paginate(9)        // tampil 6 persil per halaman
+            ->withQueryString(); // menjaga query tetap ada saat pagination
+
+        return view('pages.persil.index', compact('persil', 'search', 'pemilik', 'alamat'));
     }
 
     /**
@@ -30,10 +47,10 @@ class PersilController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-            'kode_persil' => 'required|unique:persil',
+            'kode_persil'      => 'required|unique:persil',
             'pemilik_warga_id' => 'required',
-            'luas_m2' => 'required',
-            'alamat_lahan' => 'required',
+            'luas_m2'          => 'required',
+            'alamat_lahan'     => 'required',
         ]);
 
         Persil::create($request->all());

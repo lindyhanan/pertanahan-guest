@@ -4,11 +4,23 @@
     <div class="content-wrapper py-4">
         <section class="content">
             <div class="container-fluid">
+                <form method="GET" action="{{ route('penggunaan.index') }}" class="mb-4 row g-2 align-items-center">
+                    <div class="col-md-6">
+                        <input type="text" name="search" class="form-control" placeholder="Cari nama atau keterangan..."
+                            value="{{ $search ?? '' }}">
+                    </div>
+                    <div class="col-md-2 d-flex gap-2">
+                        <button type="submit" class="btn btn-success">Cari</button>
+                        <a href="{{ route('penggunaan.index') }}" class="btn btn-outline-secondary">Reset</a>
+                    </div>
+                </form>
+
                 {{-- LIST DATA PENGGUNAAN --}}
                 <div class="row">
                     @forelse($data_penggunaan as $item)
                         <div class="col-md-4 mb-4">
-                            <div class="card border-0 shadow-sm h-100 rounded-4 hover-card" style="background-color:#f5f5f5;">
+                            <div class="card border-0 shadow-sm h-100 rounded-4 hover-card"
+                                style="background-color:#f5f5f5;">
                                 <div class="card-body">
                                     <div class="d-flex align-items-center mb-3 gap-3">
                                         <div class="rounded-circle d-flex align-items-center justify-content-center shadow-sm"
@@ -49,7 +61,9 @@
                         </div>
                     @endforelse
                 </div>
-
+                <div class="d-flex justify-content-center mt-4">
+                    {{ $data_penggunaan->links('pagination::bootstrap-5') }}
+                </div>
             </div>
         </section>
     </div>

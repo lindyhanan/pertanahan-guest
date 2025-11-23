@@ -4,6 +4,13 @@
     <div class="content-wrapper py-4">
         <div class="d-flex justify-content-between align-items-center mb-4 border-bottom pb-2">
 
+
+            <form method="GET" action="{{ route('user.index') }}" class="mb-4 d-flex gap-2">
+                <input type="text" name="search" class="form-control" placeholder="Cari user..." value="{{ $search ?? '' }}">
+                <button class="btn btn-success" type="submit">Cari</button>
+                <a href="{{ route('user.index') }}" class="btn btn-outline-secondary">Reset</a>
+            </form>
+            
             </h4>
             <div class="d-flex justify-content-end align-items-center mb-3 w-100 gap-2">
                 <a href="{{ route('user.create') }}" class="btn rounded-pill d-flex align-items-center gap-1 px-3"
@@ -75,6 +82,9 @@
                     @endforelse
                 </div>
             </div>
+        </div>
+        <div class="d-flex justify-content-center mt-4">
+            {{ $users->links('pagination::bootstrap-5') }}
         </div>
     </div>
 

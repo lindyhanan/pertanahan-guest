@@ -1,5 +1,4 @@
 <?php
-
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -9,15 +8,17 @@ class Warga extends Model
 {
     use HasFactory;
 
-    protected $table = 'data_warga';
+    protected $table      = 'warga';
     protected $primaryKey = 'warga_id';
-    protected $fillable = [
+    protected $fillable   = [
         'nama',
         'no_ktp',
+        'alamat', // <-- Tambahkan alamat
         'jenis_kelamin',
         'agama',
         'pekerjaan',
         'telp',
         'email',
     ];
+
 }

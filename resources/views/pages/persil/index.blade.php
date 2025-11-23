@@ -36,6 +36,21 @@
                     </div>
                 </div>
 
+                <form method="GET" action="{{ route('persil.index') }}" class="mb-4 row g-2 align-items-center">
+                    <div class="col-md-4">
+                        <input type="text" name="search" class="form-control" placeholder="Cari kode atau alamat..."
+                            value="{{ $search ?? '' }}">
+                    </div>
+                    <div class="col-md-3">
+                        <input type="text" name="pemilik" class="form-control" placeholder="Filter Pemilik (ID)"
+                            value="{{ $pemilik ?? '' }}">
+                    </div>
+                    <div class="col-md-2 d-flex gap-2">
+                        <button class="btn btn-success" type="submit">Terapkan</button>
+                        <a href="{{ route('persil.index') }}" class="btn btn-outline-secondary">Reset</a>
+                    </div>
+                </form>
+
                 {{-- GRID UNTUK CARD PERSIL --}}
                 <div class="row">
                     @forelse($persil as $p)
@@ -102,7 +117,9 @@
                     @endforelse
                 </div>
                 {{-- END GRID --}}
-
+                <div class="d-flex justify-content-center mt-4">
+                    {{ $persil->links('pagination::bootstrap-5') }}
+                </div>
             </div>
         </section>
     </div>

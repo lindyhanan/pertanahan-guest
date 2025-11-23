@@ -1,5 +1,4 @@
 <?php
-
 namespace App\Http\Controllers;
 
 use App\Models\User;
@@ -11,10 +10,19 @@ class UserController extends Controller
     /**
      * Tampilkan semua data user.
      */
-    public function index()
+    public function index(Request $request)
     {
-        $users = User::all();
-        return view('pages.user.index', compact('users'));
+        $search = $request->query('search');
+
+        $users = User::when($search, function ($query, $search) {
+            return $query->where('name', 'like', "%{$search}%")
+                ->orWhere('email', 'like', "%{$search}%");
+        })
+            ->orderBy('name')
+            ->paginate(9)        
+            ->withQueryString(); // biar query search tetap ada saat pagination
+
+        return view('pages.user.index', compact('users', 'search'));
     }
 
     /**

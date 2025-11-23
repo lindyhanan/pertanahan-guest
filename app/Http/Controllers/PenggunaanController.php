@@ -11,15 +11,21 @@ class PenggunaanController extends Controller
      */
     public function index(Request $request)
     {
-        $query = Penggunaan::query();
+        $search = $request->query('search'); // keyword search
+        $query  = Penggunaan::query();
 
-        if ($request->has('search')) {
-            $query->where('nama_penggunaan', 'like', '%' . $request->search . '%');
+        // Filter dan search
+        if ($search) {
+            $query->where('nama_penggunaan', 'like', "%{$search}%")
+                ->orWhere('keterangan', 'like', "%{$search}%");
         }
 
-        $data_penggunaan = $query->orderBy('created_at', 'desc')->get();
+        // Urutkan dan paginasi
+        $data_penggunaan = $query->orderBy('created_at', 'desc')
+            ->paginate(9)        // 6 item per halaman
+            ->withQueryString(); // supaya search tetap ada saat pagination
 
-        return view('pages.penggunaan.index', compact('data_penggunaan'));
+        return view('pages.penggunaan.index', compact('data_penggunaan', 'search'));
     }
 
     /**

@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::create('warga', function (Blueprint $table) {
             $table->id('warga_id');
             $table->string('nama');
-            $table->string('nik')->unique();
+            $table->string('no_ktp')->unique();
             $table->string('alamat');
             $table->timestamps();
         });

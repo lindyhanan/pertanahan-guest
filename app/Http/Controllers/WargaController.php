@@ -1,19 +1,34 @@
 <?php
-
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
 use App\Models\Warga;
+use Illuminate\Http\Request;
 
 class WargaController extends Controller
 {
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
-        $warga = Warga::all();
-        return view('pages.warga.index', compact('warga'));
+        $search = $request->query('search');
+        // Variabel filter yang tidak ada di skema migrasi (jenis_kelamin dan agama)
+        // akan tetap diambil dari request untuk keperluan view, namun tidak digunakan dalam query database.
+        $jenis_kelamin = $request->query('jenis_kelamin');
+        $agama         = $request->query('agama');
+
+        $warga = Warga::query()
+            ->when($search, function ($query, $search) {
+                $query->where('nama', 'like', "%{$search}%")
+                    ->orWhere('no_ktp', 'like', "%{$search}%")  // Mengganti 'no_ktp' menjadi 'nik'
+                    ->orWhere('alamat', 'like', "%{$search}%"); // Menambahkan pencarian alamat
+
+            })
+            ->orderBy('nama')
+            ->paginate(9)        // tampil 9 data per halaman
+            ->withQueryString(); // biar query search/filter tetap ada saat pagination
+
+        return view('pages.warga.index', compact('warga', 'search'));
     }
 
     /**
@@ -30,20 +45,20 @@ class WargaController extends Controller
      */
     public function store(Request $request)
     {
-         $validated = $request->validate([
-            'nama' => 'required|string|max:255',
-            'no_ktp' => 'required|string|max:20',
+        $validated = $request->validate([
+            'nama'          => 'required|string|max:255',
+            'no_ktp'        => 'required|string|max:20',
+            'alamat'        => 'nullable|string|max:255', // <-- Tambahan alamat
             'jenis_kelamin' => 'required|string',
-            'agama' => 'nullable|string',
-            'pekerjaan' => 'nullable|string',
-            'telp' => 'nullable|string',
-            'email' => 'nullable|email',
+            'agama'         => 'nullable|string',
+            'pekerjaan'     => 'nullable|string',
+            'telp'          => 'nullable|string',
+            'email'         => 'nullable|email',
         ]);
 
         Warga::create($validated);
 
         return redirect()->back()->with('success', 'Data warga berhasil ditambahkan!');
-
     }
 
     /**
