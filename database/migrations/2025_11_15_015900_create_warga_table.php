@@ -6,9 +6,6 @@ use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration
 {
-    /**
-     * Run the migrations.
-     */
     public function up(): void
     {
         Schema::create('warga', function (Blueprint $table) {
@@ -16,13 +13,15 @@ return new class extends Migration
             $table->string('nama');
             $table->string('no_ktp')->unique();
             $table->string('alamat');
+            $table->string('jenis_kelamin')->nullable();
+            $table->string('agama')->nullable();
+            $table->string('pekerjaan')->nullable();
+            $table->string('telp')->nullable();
+            $table->string('email')->nullable();
             $table->timestamps();
         });
     }
 
-    /**
-     * Reverse the migrations.
-     */
     public function down(): void
     {
         Schema::dropIfExists('warga');

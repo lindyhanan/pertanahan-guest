@@ -23,4 +23,11 @@ class Persil extends Model
     {
         return $this->hasMany(DokumenPersil::class, 'persil_id');
     }
+
+    public function media()
+    {
+        return $this->hasMany(Media::class, 'ref_id', 'persil_id')
+                    ->where('ref_table', 'persil')
+                    ->orderBy('sort_order', 'asc');
+    }
 }

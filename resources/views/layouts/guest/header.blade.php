@@ -3,7 +3,7 @@
     <div class="container-fluid px-4 d-flex align-items-center">
 
         {{-- Logo / Title --}}
-        <a class="navbar-brand d-flex align-items-center fw-bold text-white" href="{{ route('dashboard') }}">
+        <a class="navbar-brand d-flex align-items-center fw-bold text-white" href="{{ route('dashboard.index') }}">
             <i data-feather="map" class="me-2"></i>
             <span class="fs-5 align-middle">Pertanahan</span>
         </a>
@@ -21,7 +21,7 @@
 
                 {{-- Beranda --}}
                 <li class="nav-item">
-                    <a class="nav-link text-white fw-semibold px-3" href="{{ route('dashboard') }}">
+                    <a class="nav-link text-white fw-semibold px-3" href="{{ route('dashboard.index') }}">
                         <i data-feather="home" class="me-1"></i> Beranda
                     </a>
                 </li>

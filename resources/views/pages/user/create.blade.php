@@ -16,7 +16,7 @@
 
                 <div class="d-flex justify-content-end align-items-center mb-3 gap-2">
                     </a>
-                    <a href="{{ route('dashboard') }}"
+                    <a href="{{ route('dashboard.index') }}"
                         class="btn btn-outline-success rounded-pill d-flex align-items-center gap-1 px-3">
                         <i data-feather="arrow-left"></i> <span>Kembali</span>
                     </a>
@@ -39,6 +39,13 @@
                                     <label class="form-label fw-semibold text-success">Email</label>
                                     <input type="email" name="email" class="form-control border-0 shadow-sm"
                                         placeholder="Masukkan alamat email" required>
+                                </div>
+                                <div class="col-md-6 mb-3">
+                                    <label class="form-label fw-semibold text-success">Role</label>
+                                    <select name="role" class="form-control border-0 shadow-sm" required>
+                                        <option value="admin">Admin</option>
+                                        <option value="staff" selected>Staff</option>
+                                    </select>
                                 </div>
                                 <div class="col-md-6 mb-3">
                                     <label class="form-label fw-semibold text-success">Password</label>

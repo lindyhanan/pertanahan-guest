@@ -36,8 +36,7 @@ class WargaController extends Controller
      */
     public function create()
     {
-        $warga = Warga::latest()->get();
-        return view('pages.warga.index', compact('warga'));
+        return view('pages.warga.create');
     }
 
     /**

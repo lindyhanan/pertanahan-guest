@@ -19,7 +19,7 @@
                         style="background-color:#388e3c; color:white;">
                         <i data-feather="user-plus"></i> <span>Tambah Penggunaan</span>
                     </a>
-                    <a href="{{ route('dashboard') }}"
+                    <a href="{{ route('dashboard.index') }}"
                         class="btn btn-outline-success rounded-pill d-flex align-items-center gap-1 px-3">
                         <i data-feather="arrow-left"></i> <span>Kembali</span>
                     </a>

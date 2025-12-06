@@ -11,7 +11,7 @@ class AuthController extends Controller
     {
         // kalau sudah login, langsung ke dashboard
         if (Auth::check()) {
-            return redirect()->route('dashboard');
+            return redirect()->route('dashboard.index');
         }
 
         return view('pages.auth.login');
@@ -25,11 +25,10 @@ class AuthController extends Controller
 
         if (Auth::attempt($credentials)) {
             $request->session()->regenerate();
-            return redirect()->intended('dashboard');
+            return redirect()->route('dashboard.index');
         }
 
         return back()->with('error', 'Email atau password salah.')->withInput();
-
     }
 
     public function logout(Request $request)

@@ -19,7 +19,7 @@ class UserController extends Controller
                 ->orWhere('email', 'like', "%{$search}%");
         })
             ->orderBy('name')
-            ->paginate(9)        
+            ->paginate(9)
             ->withQueryString(); // biar query search tetap ada saat pagination
 
         return view('pages.user.index', compact('users', 'search'));
@@ -41,18 +41,20 @@ class UserController extends Controller
         $request->validate([
             'name'     => 'required|string|max:100',
             'email'    => 'required|email|unique:users,email',
+            'role'     => 'required|in:admin,staf',
             'password' => 'required|min:6|confirmed', // pastikan ada password_confirmation di form
         ]);
 
         $data = [
             'name'     => $request->name,
             'email'    => $request->email,
+            'role'     => $request->role,
             'password' => Hash::make($request->password),
         ];
 
         User::create($data);
 
-        return redirect()->route('pages.user.index')->with('success', 'User berhasil ditambahkan.');
+        return redirect()->route('user.index')->with('success', 'User berhasil ditambahkan.');
     }
 
     /**
@@ -74,12 +76,14 @@ class UserController extends Controller
         $request->validate([
             'name'     => 'required|string|max:100',
             'email'    => 'required|email|unique:users,email,' . $user->id,
+            'role'     => 'required|in:admin,staff',
             'password' => 'nullable|min:6|confirmed',
         ]);
 
         $data = [
             'name'  => $request->name,
             'email' => $request->email,
+            'role'  => $request->role,
         ];
 
         if ($request->filled('password')) {

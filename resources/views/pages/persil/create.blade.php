@@ -26,7 +26,7 @@
 
                             {{-- Card Body (Formulir) --}}
                             <div class="card-body">
-                                <form action="{{ route('persil.store') }}" method="POST">
+                                <form action="{{ route('persil.store') }}" method="POST" enctype="multipart/form-data">
                                     @csrf
 
                                     <div class="row">
@@ -116,6 +116,18 @@
                                                 <div class="invalid-feedback">{{ $message }}</div>
                                             @enderror
                                         </div>
+                                    </div>
+
+                                    {{-- Upload Foto (opsional, multiple) --}}
+                                    <div class="mb-3">
+                                        <label class="form-label text-secondary fw-semibold">Foto Bidang / Koordinat
+                                            (opsional)</label>
+                                        <input type="file" name="media[]" class="form-control" multiple accept="image/*">
+                                        <small class="text-muted">Boleh meng-upload lebih dari satu file. Maks 5 MB per
+                                            file.</small>
+                                        @error('media.*')
+                                            <div class="text-danger small">{{ $message }}</div>
+                                        @enderror
                                     </div>
 
                                     {{-- Tombol Aksi --}}

@@ -29,7 +29,7 @@
                             style="background-color:#388e3c; color:white;">
                             <i data-feather="plus"></i> <span>Tambah Persil</span>
                         </a>
-                        <a href="{{ route('dashboard') }}"
+                        <a href="{{ route('dashboard.index') }}"
                             class="btn btn-outline-success rounded-pill d-flex align-items-center gap-1 px-3">
                             <i data-feather="arrow-left"></i> <span>Kembali</span>
                         </a>
@@ -83,6 +83,12 @@
 
                                 {{-- Footer Card (Aksi) --}}
                                 <div class="card-footer bg-white d-flex justify-content-end gap-2">
+                                    {{-- Tombol Detail --}}
+                                    <a href="{{ route('persil.show', $p->persil_id) }}"
+                                        class="btn btn-sm btn-info rounded-pill px-3 text-white">
+                                        <i data-feather="eye" style="width: 14px; height: 14px;"></i> Detail
+                                    </a>
+
                                     {{-- Tombol Edit --}}
                                     <a href="{{ route('persil.edit', $p->persil_id) }}"
                                         class="btn btn-sm btn-warning rounded-pill px-3">
@@ -99,6 +105,7 @@
                                         </button>
                                     </form>
                                 </div>
+
                             </div>
                         </div>
                     @empty
