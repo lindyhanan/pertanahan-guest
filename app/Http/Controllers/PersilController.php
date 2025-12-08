@@ -51,7 +51,7 @@ class PersilController extends Controller
     {
         $request->validate([
             'kode_persil'      => 'required|unique:persil',
-            'pemilik_warga_id' => 'required',
+            'pemilik_warga_id' => 'required|exists:warga,warga_id',
             'luas_m2'          => 'required|numeric',
             'alamat_lahan'     => 'required',
             'media.*'          => 'nullable|file|max:5120',

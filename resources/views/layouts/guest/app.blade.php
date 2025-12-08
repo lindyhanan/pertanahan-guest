@@ -13,10 +13,12 @@
             @include('layouts.guest.header')
             <div class="page-inner">
                 @yield('content')
+                    {{-- @include('layouts.guest.footer') --}}
             </div>
         </div>
     </div>
     @include('layouts.guest.js')
+
 </body>
 
 </html>

@@ -9,7 +9,7 @@ use Faker\Factory;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\Hash;
 
-class PertahananSeeder extends Seeder
+class PertanahanSeeder extends Seeder
 {
     /**
      * Run the database seeds.
@@ -23,9 +23,9 @@ class PertahananSeeder extends Seeder
         // ----------------------------
         for ($i = 1; $i <= 100; $i++) {
             User::create([
-                'name'      => $faker->name(),
-                'email'     => $faker->unique()->safeEmail(),
-                'password'  => Hash::make('password123'),
+                'name'     => $faker->name(),
+                'email'    => $faker->unique()->safeEmail(),
+                'password' => Hash::make('password123'),
             ]);
         }
 
@@ -34,9 +34,14 @@ class PertahananSeeder extends Seeder
         // ----------------------------
         for ($i = 1; $i <= 100; $i++) {
             Warga::create([
-                'nama'      => $faker->name(),
-                'no_ktp'    => $faker->unique()->numerify('################'), // 16 digit NIK
-                'alamat'    => $faker->address(),
+                'nama'   => $faker->name(),
+                'no_ktp' => $faker->unique()->numerify('################'), // 16 digit NIK
+                'alamat' => $faker->address(),
+                'jenis_kelamin'=> $faker->gender(),
+                'agama' =>,
+                'pekerjaan',
+                'telp',
+                'email',
                 // Kolom lain (jenis_kelamin, agama, telp, email) dihapus agar sesuai dengan migrasi 'warga'
             ]);
         }
@@ -46,15 +51,15 @@ class PertahananSeeder extends Seeder
         // ----------------------------
         $jenisPenggunaan = ['Permukiman', 'Sawah', 'Kebun', 'Ternak', 'Industri', 'Lapangan Olahraga', 'Fasilitas Umum', 'Hutan Lindung', 'Perkebunan', 'Taman Kota'];
         foreach ($jenisPenggunaan as $jenis) {
-             Penggunaan::create([
+            Penggunaan::create([
                 'nama_penggunaan' => $jenis,
                 'keterangan'      => $faker->sentence(6),
             ]);
         }
 
-        // ----------------------------
-        // Seeder Persil
-        // ----------------------------
+                                      // ----------------------------
+                                      // Seeder Persil
+                                      // ----------------------------
         $wargaCount = Warga::count(); // Ambil jumlah warga yang telah dibuat
         for ($i = 1; $i <= 100; $i++) {
             Persil::create([

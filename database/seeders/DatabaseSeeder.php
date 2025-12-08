@@ -17,7 +17,7 @@ class DatabaseSeeder extends Seeder
 
         User::factory()->create([
             'name'     => 'Lindy',
-            'email'    => 'lindy@gmail.com',
+            'email'    => 'admin@gmail.com',
             'role'     => 'admin',
             'password' => Hash::make('linday'),
         ]);
@@ -28,8 +28,8 @@ class DatabaseSeeder extends Seeder
         //     DokumenPersilSeeder::class,
         // ]);
 
-        $this->call([
-            PertahananSeeder::class,
-        ]);
+        // $this->call([
+        //     PertahananSeeder::class,
+        // ]);
     }
 }

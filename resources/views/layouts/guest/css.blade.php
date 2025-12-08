@@ -34,6 +34,26 @@
 
   </head>
 <style>
+
+    #whatsapp-button {
+        position: fixed;
+        bottom: 20px;          /* Jarak dari bawah */
+        right: 20px;           /* Jarak dari kanan */
+        z-index: 9999;         /* Supaya di atas elemen lain */
+    }
+
+    #whatsapp-button a img {
+        width: 55px;           /* Ukuran tombol */
+        height: 55px;
+        border-radius: 50%;    /* Jadi bulat */
+        box-shadow: 0 2px 10px rgba(0,0,0,0.3);
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+
+    #whatsapp-button a img:hover {
+        transform: scale(1.1);
+        box-shadow: 0 4px 15px rgba(0,0,0,0.4);
+    }
 .hover-card:hover {
     transform: translateY(-5px);
     box-shadow: 0 6px 16px rgba(0,0,0,0.15);
@@ -95,4 +115,6 @@
   }
 </style>
 
+
+</style>
   <!-- end css -->

@@ -1,5 +1,4 @@
 <?php
-
 use App\Http\Controllers\AboutController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\DashboardController;
@@ -27,7 +26,7 @@ Route::post('/penggunaan/edit', [PenggunaanController::class, 'update'])->name('
 //     return view('pages.guest.dashboard');
 // }); // ->name('dashboard')
 
-Route::get('/dashboard', [DashboardController::class, 'index'])
+Route::get('/', [DashboardController::class, 'index'])
     ->name('dashboard.index')
     ->middleware('checkislogin');
 
@@ -38,8 +37,5 @@ Route::post('persil/{persil}/media/{media}/delete', [PersilController::class, 'd
     ->name('persil.media.destroy');
 
 Route::group(['middleware' => ['checkrole:admin']], function () {
-
     Route::resource('user', UserController::class);
-    /** List Route Lainnya */
-
 });

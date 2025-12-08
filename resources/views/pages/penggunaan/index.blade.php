@@ -15,6 +15,17 @@
                     </div>
                 </form>
 
+                <div class="d-flex justify-content-end align-items-center mb-3 gap-2">
+                    <a href="{{ route('penggunaan.create') }}" class="btn rounded-pill d-flex align-items-center gap-1 px-3"
+                        style="background-color:#388e3c; color:white;">
+                        <i data-feather="user-plus"></i> <span>Tambah Penggunaan</span>
+                    </a>
+                    <a href="{{ route('dashboard.index') }}"
+                        class="btn btn-outline-success rounded-pill d-flex align-items-center gap-1 px-3">
+                        <i data-feather="arrow-left"></i> <span>Kembali</span>
+                    </a>
+                </div>
+
                 {{-- LIST DATA PENGGUNAAN --}}
                 <div class="row">
                     @forelse($data_penggunaan as $item)

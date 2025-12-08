@@ -4,7 +4,6 @@
     <div class="content-wrapper py-4">
         <section class="content">
             <div class="container-fluid">
-
                 {{-- ALERT FLASH MESSAGE --}}
                 @if (session('success'))
                     <div
