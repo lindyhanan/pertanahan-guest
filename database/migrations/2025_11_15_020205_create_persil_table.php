@@ -16,7 +16,8 @@ return new class extends Migration
             $table->string('kode_persil')->unique();
             $table->unsignedBigInteger('pemilik_warga_id'); // FK ke warga
             $table->decimal('luas_m2', 10, 2);
-            $table->string('penggunaan')->nullable();
+            $table->foreignId('penggunaan_id')
+                ->constrained('jenis_penggunaan', 'jenis_id');
             $table->string('alamat_lahan');
             $table->string('rt', 5);
             $table->string('rw', 5);
