@@ -126,7 +126,7 @@
                                     <div class="mb-3">
                                         <label class="form-label text-secondary fw-semibold">Tambah Foto Bidang / Koordinat
                                             (opsional)</label>
-                                        <input type="file" name="media[]" class="form-control" multiple accept="image/*">
+                                        <input type="file" name="media[]" class="form-control" multiple accept=".jpg,.jpeg,.png,.pdf">
                                         <small class="text-muted">Tambah foto baru tanpa menghapus foto lama. Maks 5 MB per
                                             file.</small>
                                         @error('media.*')

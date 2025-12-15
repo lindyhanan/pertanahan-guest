@@ -57,11 +57,19 @@
 
                                 {{-- FOTO --}}
                                 <div class="text-center mb-3">
-                                    <img src="{{ asset('assets/img/profile.jpg') }}"
-                                        class="rounded-circle shadow-sm"
-                                        width="80" height="80"
-                                        style="border:3px solid #81c784;">
-                                </div>
+    @if ($user->foto)
+        <img src="{{ asset('storage/'.$user->foto) }}"
+             class="rounded-circle shadow-sm"
+             width="80" height="80"
+             style="border:3px solid #81c784; object-fit:cover;">
+    @else
+        <img src="{{ asset('assets/img/profile.png') }}"
+             class="rounded-circle shadow-sm"
+             width="80" height="80"
+             style="border:3px solid #81c784;">
+    @endif
+</div>
+
 
                                 {{-- NAMA & EMAIL --}}
                                 <h5 class="fw-semibold text-success text-center mb-1">

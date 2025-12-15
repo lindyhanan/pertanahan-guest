@@ -4,9 +4,11 @@ namespace App\Http\Controllers;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Storage;
 
 class UserController extends Controller
 {
+
     /**
      * Tampilkan semua data user.
      */
@@ -41,7 +43,7 @@ class UserController extends Controller
         $request->validate([
             'name'     => 'required|string|max:100',
             'email'    => 'required|email|unique:users,email',
-            'role'     => 'required|in:admin,staf',
+            'role'     => 'required|in:admin,staff,klien',
             'password' => 'required|min:6|confirmed', // pastikan ada password_confirmation di form
         ]);
 
@@ -76,7 +78,8 @@ class UserController extends Controller
         $request->validate([
             'name'     => 'required|string|max:100',
             'email'    => 'required|email|unique:users,email,' . $user->id,
-            'role'     => 'required|in:admin,staff',
+            'role'     => 'required|in:admin,staff,klien',
+            'foto'     => 'nullable|image|max:5120',
             'password' => 'nullable|min:6|confirmed',
         ]);
 
@@ -86,13 +89,32 @@ class UserController extends Controller
             'role'  => $request->role,
         ];
 
+        /* ===============================
+       HANDLE FOTO PROFILE
+       =============================== */
+        if ($request->hasFile('foto')) {
+
+            // hapus foto lama (jika ada)
+            if ($user->foto && Storage::disk('public')->exists($user->foto)) {
+                Storage::disk('public')->delete($user->foto);
+            }
+
+            // simpan foto baru
+            $data['foto'] = $request->file('foto')->store('users', 'public');
+        }
+
+        /* ===============================
+       HANDLE PASSWORD
+       =============================== */
         if ($request->filled('password')) {
             $data['password'] = Hash::make($request->password);
         }
 
         $user->update($data);
 
-        return redirect()->route('user.index')->with('success', 'User berhasil diperbarui.');
+        return redirect()
+            ->route('user.index')
+            ->with('success', 'User berhasil diperbarui.');
     }
 
     /**
@@ -105,4 +127,23 @@ class UserController extends Controller
 
         return redirect()->route('user.index')->with('success', 'User berhasil dihapus.');
     }
+
+    public function destroyPhoto($id)
+    {
+        $user = User::findOrFail($id);
+
+        if ($user->foto && Storage::disk('public')->exists($user->foto)) {
+            Storage::disk('public')->delete($user->foto);
+        }
+
+        $user->update([
+            'foto' => null,
+        ]);
+
+        return redirect()
+            ->route('user.edit', $user->id)
+            ->with('success', 'Foto profile berhasil dihapus.');
+
+    }
+
 }

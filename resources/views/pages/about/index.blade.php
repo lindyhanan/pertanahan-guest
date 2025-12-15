@@ -8,7 +8,7 @@
         <h4 class="fw-semibold text-success-emphasis mb-0 d-flex align-items-center gap-2">
             <i data-feather="info" class="text-success"></i> Tentang Aplikasi
         </h4>
-        <a href="{{ route('dashboard') }}" class="btn btn-outline-success rounded-pill d-flex align-items-center gap-1 px-3">
+        <a href="{{ route('dashboard.index') }}" class="btn btn-outline-success rounded-pill d-flex align-items-center gap-1 px-3">
             <i data-feather="arrow-left"></i> <span>Kembali</span>
         </a>
     </div>

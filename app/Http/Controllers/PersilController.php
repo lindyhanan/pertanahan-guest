@@ -1,11 +1,10 @@
 <?php
 namespace App\Http\Controllers;
 
-use App\Models\Persil;
 use App\Models\Media;
+use App\Models\Persil;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
-use Illuminate\Support\Str;
 
 class PersilController extends Controller
 {
@@ -54,10 +53,9 @@ class PersilController extends Controller
             'pemilik_warga_id' => 'required|exists:warga,warga_id',
             'luas_m2'          => 'required|numeric',
             'alamat_lahan'     => 'required',
-            'media.*'          => 'nullable|file|max:5120',
+            'media.*'          => 'nullable|file|mimes:jpg,jpeg,png|max:5120',
         ]);
 
-        // Simpan persil
         $persil = Persil::create($request->only([
             'kode_persil',
             'pemilik_warga_id',
@@ -65,29 +63,31 @@ class PersilController extends Controller
             'penggunaan',
             'alamat_lahan',
             'rt',
-            'rw'
+            'rw',
         ]));
 
-        // Handle multiple media (opsional)
         if ($request->hasFile('media')) {
             foreach ($request->file('media') as $file) {
-                if (!$file->isValid()) continue;
+                if (! $file || ! $file->isValid()) {
+                    continue;
+                }
 
-                // Save file to storage/app/public/media
-                $path = $file->store('media', 'public'); // returns path like media/xxxx.jpg
+                $path = $file->store('media', 'public');
 
                 Media::create([
-                    'ref_table' => 'persil',
-                    'ref_id'    => $persil->persil_id,
-                    'file_url'  => $path,
-                    'caption'   => null,
-                    'mime_type' => $file->getClientMimeType(),
-                    'sort_order'=> 0,
+                    'ref_table'  => 'persil',
+                    'ref_id'     => $persil->persil_id,
+                    'file_url'   => $path,
+                    'mime_type'  => $file->getClientMimeType(),
+                    'caption'    => null,
+                    'sort_order' => 0,
                 ]);
             }
         }
 
-        return redirect()->route('persil.index')->with('success', 'Data berhasil ditambahkan');
+        return redirect()
+            ->route('persil.index')
+            ->with('success', 'Data berhasil ditambahkan');
     }
 
     /**
@@ -130,22 +130,24 @@ class PersilController extends Controller
             'penggunaan',
             'alamat_lahan',
             'rt',
-            'rw'
+            'rw',
         ]));
 
         // Tambah file baru jika ada
         if ($request->hasFile('media')) {
             foreach ($request->file('media') as $file) {
-                if (!$file->isValid()) continue;
+                if (! $file->isValid()) {
+                    continue;
+                }
 
                 $path = $file->store('media', 'public');
                 Media::create([
-                    'ref_table' => 'persil',
-                    'ref_id'    => $persil->persil_id,
-                    'file_url'  => $path,
-                    'caption'   => null,
-                    'mime_type' => $file->getClientMimeType(),
-                    'sort_order'=> 0,
+                    'ref_table'  => 'persil',
+                    'ref_id'     => $persil->persil_id,
+                    'file_url'   => $path,
+                    'caption'    => null,
+                    'mime_type'  => $file->getClientMimeType(),
+                    'sort_order' => 0,
                 ]);
             }
         }
@@ -166,20 +168,25 @@ class PersilController extends Controller
      * Delete a single media item for a persil.
      * Route: POST /persil/{persil}/media/{media}/delete
      */
-    public function destroyMedia(Request $request, $persilId, $mediaId)
-    {
-        $media = Media::where('media_id', $mediaId)
-                      ->where('ref_table', 'persil')
-                      ->where('ref_id', $persilId)
-                      ->firstOrFail();
+    public function destroyMedia($persilId, $mediaId)
+{
+    $media = Media::where('media_id', $mediaId)
+        ->where('ref_table', 'persil')
+        ->where('ref_id', $persilId)
+        ->firstOrFail();
 
-        // hapus file fisik
-        if ($media->file_url && Storage::disk('public')->exists($media->file_url)) {
-            Storage::disk('public')->delete($media->file_url);
-        }
-
-        $media->delete();
-
-        return back()->with('success', 'Foto berhasil dihapus');
+    // HAPUS FILE FISIK
+    if ($media->file_url && Storage::disk('public')->exists($media->file_url)) {
+        Storage::disk('public')->delete($media->file_url);
     }
+
+    // HAPUS DB
+    $media->delete();
+
+    return redirect()
+    ->back()
+    ->withFragment('detail-' . $persilId)
+    ->with('success', 'File berhasil dihapus');
+
+}
 }

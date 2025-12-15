@@ -33,6 +33,14 @@
                         <form action="{{ route('penggunaan.store') }}" method="POST">
                             @csrf
                             <div class="row">
+                                <div class="mb-3">
+    <label class="form-label">ID Penggunaan</label>
+    <input type="text"
+           class="form-control"
+           value="{{ $nextId ?? 'Auto' }}"
+           disabled>
+</div>
+
                                 <div class="col-md-6 mb-3">
                                     <label class="form-label text-secondary fw-semibold">Nama Penggunaan</label>
                                     <input type="text" name="nama_penggunaan" class="form-control border-success-subtle"

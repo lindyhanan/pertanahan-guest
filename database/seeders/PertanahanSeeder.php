@@ -25,6 +25,8 @@ class PertanahanSeeder extends Seeder
             User::create([
                 'name'     => $faker->name(),
                 'email'    => $faker->unique()->safeEmail(),
+                'role'     => $faker->randomElement(['admin', 'staff', 'klien']),
+                'foto'     => null,
                 'password' => Hash::make('password123'),
             ]);
         }
@@ -34,28 +36,47 @@ class PertanahanSeeder extends Seeder
         // ----------------------------
         for ($i = 1; $i <= 100; $i++) {
             Warga::create([
-                'nama'   => $faker->name(),
-                'no_ktp' => $faker->unique()->numerify('################'), // 16 digit NIK
-                'alamat' => $faker->address(),
-                'jenis_kelamin'=> $faker->gender(),
-                'agama' =>,
-                'pekerjaan',
-                'telp',
-                'email',
-                // Kolom lain (jenis_kelamin, agama, telp, email) dihapus agar sesuai dengan migrasi 'warga'
+                'nama'          => $faker->name(),
+                'no_ktp'        => $faker->unique()->numerify('################'), // 16 digit NIK
+                'alamat'        => $faker->address(),
+                'jenis_kelamin' => $faker->randomElement(['Laki-laki', 'Perempuan']),
+                'agama'         => $faker->randomElement(['Islam', 'Kristen', 'Katolik', 'Hindu', 'Budha', 'Konghucu']),
+                'pekerjaan'     => $faker->jobTitle(),
+                'telp'          => $faker->phoneNumber(),
+                'email'         => $faker->unique()->safeEmail(),
             ]);
         }
 
         // ----------------------------
         // Seeder Penggunaan
         // ----------------------------
-        $jenisPenggunaan = ['Permukiman', 'Sawah', 'Kebun', 'Ternak', 'Industri', 'Lapangan Olahraga', 'Fasilitas Umum', 'Hutan Lindung', 'Perkebunan', 'Taman Kota'];
-        foreach ($jenisPenggunaan as $jenis) {
-            Penggunaan::create([
-                'nama_penggunaan' => $jenis,
-                'keterangan'      => $faker->sentence(6),
-            ]);
-        }
+        $jenisPenggunaan = [
+    'Permukiman',
+    'Sawah',
+    'Kebun',
+    'Ternak',
+    'Industri',
+    'Lapangan Olahraga',
+    'Fasilitas Umum',
+    'Hutan Lindung',
+    'Perkebunan',
+    'Taman Kota'
+];
+
+for ($i = 1; $i <= 150; $i++) {
+
+    $jenis = $faker->randomElement($jenisPenggunaan);
+
+    Penggunaan::updateOrCreate(
+        ['nama_penggunaan' => $jenis],
+        ['keterangan' =>
+            'Lahan ini digunakan untuk ' .
+            strtolower($jenis) .
+            ' dan dikelola sesuai ketentuan yang berlaku.'
+        ]
+    );
+}
+
 
                                       // ----------------------------
                                       // Seeder Persil

@@ -4,9 +4,14 @@
 
         {{-- Logo / Title --}}
         <a class="navbar-brand d-flex align-items-center fw-bold text-white" href="{{ route('dashboard.index') }}">
-            <i data-feather="map" class="me-2"></i>
-            <span class="fs-5 align-middle">Pertanahan</span>
-        </a>
+    <img src="{{ asset('assets/img/logo_pertanahan.png') }}" 
+         alt="Logo Pertanahan" 
+         class="me-2"
+         style="height:40px; width:auto; object-fit:contain;">
+
+    <span class="fs-5 align-middle">Pertanahan</span>
+</a>
+
 
         {{-- Toggle (mobile) --}}
         <button class="navbar-toggler text-white border-0 ms-auto" type="button" data-bs-toggle="collapse"
@@ -107,9 +112,17 @@
                         <a class="nav-link dropdown-toggle text-white d-flex align-items-center fw-semibold px-3"
                             href="#" id="menuProfile" role="button" data-bs-toggle="dropdown"
                             aria-expanded="false">
-                            <img src="https://ui-avatars.com/api/?name={{ urlencode(Auth::user()->name) }}&background=6b8e23&color=fff&size=32"
-                                alt="Profile" class="rounded-circle me-2 border border-light" width="32"
-                                height="32">
+                            @if (auth()->user()->foto)
+    <img src="{{ asset('storage/'.auth()->user()->foto) }}"
+         class="rounded-circle"
+         width="36" height="36"
+         style="object-fit:cover;">
+@else
+    <img src="{{ asset('assets/img/profile.png') }}"
+         class="rounded-circle"
+         width="36" height="36">
+@endif
+
                             {{ Auth::user()->name }}
                         </a>
                         <ul class="dropdown-menu dropdown-menu-end shadow-sm border-0 rounded-3"

@@ -56,6 +56,16 @@
                                                 class="form-control border-success-subtle" value="{{ old('nama') }}"
                                                 required placeholder="Nama lengkap sesuai KTP">
                                         </div>
+                                        <div class="col-md-6 mb-3">
+    <label class="form-label fw-semibold text-secondary">
+        Nomor Warga (Otomatis)
+    </label>
+    <input type="text"
+           class="form-control"
+           value="{{ $nextId }}"
+           readonly>
+</div>
+
 
                                         {{-- Alamat --}}
                                         <div class="col-12 mb-3">

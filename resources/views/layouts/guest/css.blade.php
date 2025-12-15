@@ -118,3 +118,499 @@
 
 </style>
   <!-- end css -->
+<style>
+/* OVERLAY */
+.detail-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,.55);
+    display: none;
+    align-items: center;
+    justify-content: center;
+    z-index: 9999;
+    overflow-y: auto;       /* 🔑 allow scroll */
+    padding: 24px 12px;     /* biar aman di mobile */
+}
+
+.detail-overlay:target {
+    display: flex;
+}
+
+
+/* BOX */
+.detail-box {
+    background: #fff;
+    width: 700px;
+    max-width: 95vw;
+    max-height: 90vh;       /* 🔑 jangan lebih tinggi layar */
+    border-radius: 16px;
+    display: flex;
+    flex-direction: column;
+}
+
+
+/* HEADER */
+.detail-header {
+    background: #2e7d32;
+    color: white;
+    padding: 12px 16px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+/* BODY */
+.detail-body {
+    padding: 16px;
+    overflow-y: auto;
+}
+
+.detail-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+}
+
+/* ===== MODE 1 FILE (BESAR) ===== */
+.detail-image-single {
+    margin-bottom: 16px;
+}
+
+.detail-image-large {
+    width: 100%;
+    max-height: 320px;
+    object-fit: cover;
+    border-radius: 12px;
+}
+
+/* ===== MODE GRID (BANYAK FILE) ===== */
+.detail-image-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 12px;
+    margin-bottom: 16px;
+}
+
+.detail-image-grid-img {
+    width: 100%;
+    height: 160px;
+    object-fit: cover;
+    border-radius: 10px;
+}
+
+/* Mobile */
+@media (max-width: 576px) {
+    .detail-image-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+.image-action-overlay {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+
+    background: rgba(0,0,0,0.45);
+    opacity: 0;
+    transition: opacity .2s ease;
+}
+
+body:has(.detail-overlay:target) {
+    overflow: hidden;
+}
+
+
+.detail-body p {
+    margin-bottom: 8px;
+}
+
+/* IMAGE */
+.detail-image {
+    width: 100%;
+    max-height: 160px;
+    object-fit: cover;
+    border-radius: 10px;
+    margin-bottom: 12px;
+}
+
+/* CLOSE */
+.close-btn {
+    color: white;
+    font-size: 20px;
+    text-decoration: none;
+}
+/* ===============================
+   HOVER DELETE GAMBAR
+   =============================== */
+
+/* Wrapper gambar */
+.detail-image-wrap {
+    position: relative;
+    overflow: hidden;
+    border-radius: 12px;
+}
+
+/* Overlay tombol hapus */
+.image-delete-form {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    background: rgba(0,0,0,0.45);
+    opacity: 0;
+    transition: opacity .2s ease;
+}
+
+/* Hover desktop */
+.detail-image-wrap:hover .image-delete-form {
+    opacity: 1;
+}
+
+/* Mobile (tidak ada hover) */
+@media (hover: none) {
+    .image-delete-form {
+        opacity: 1;
+        align-items: flex-end;
+        justify-content: center;
+        padding: 8px;
+        background: linear-gradient(
+            to top,
+            rgba(0,0,0,.6),
+            rgba(0,0,0,0)
+        );
+    }
+}
+
+/* ===============================
+   CARD IMAGE (ATAS CARD PERSIL)
+   =============================== */
+
+.card-image-wrapper {
+    position: relative;
+    width: 100%;
+    height: 160px;
+    overflow: hidden;
+
+    /* nyatu sama card */
+    border-top-left-radius: 12px;
+    border-top-right-radius: 12px;
+}
+
+/* GAMBAR COVER */
+.card-image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+/* BADGE +4 */
+.card-image-badge {
+    position: absolute;
+    right: 8px;
+    bottom: 8px;
+
+    background: rgba(0,0,0,0.7);
+    color: #fff;
+    font-size: 13px;
+    font-weight: 600;
+
+    padding: 4px 10px;
+    border-radius: 999px;
+}
+
+/* PLACEHOLDER JIKA BELUM ADA FILE */
+.card-image-placeholder {
+    width: 100%;
+    height: 100%;
+
+    background: #e9ecef;
+    color: #6c757d;
+
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+
+    font-size: 13px;
+}
+
+.card-image-placeholder i[data-feather="file-text"] {
+    color: #dc3545; /* merah PDF */
+}
+
+/* ===== PDF COVER BLUR ===== */
+.pdf-cover {
+    background: linear-gradient(
+        135deg,
+        #dee2e6,
+        #ced4da
+    );
+    position: relative;
+}
+
+.pdf-cover::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background-image: url('/images/pdf-bg.png'); /* optional */
+    background-size: cover;
+    filter: blur(8px);
+    opacity: 0.4;
+}
+
+.pdf-cover > * {
+    position: relative;
+    z-index: 1;
+}
+
+.pdf-cover i {
+    width: 32px;
+    height: 32px;
+    color: #dc3545;
+}
+.detail-image-wrap:hover .image-action-overlay {
+    opacity: 1;
+}
+
+/* Mobile */
+@media (hover: none) {
+    .image-action-overlay {
+        opacity: 1;
+        align-items: flex-end;
+        padding: 8px;
+        background: linear-gradient(
+            to top,
+            rgba(0,0,0,.6),
+            rgba(0,0,0,0)
+        );
+    }
+}
+/* PREVIEW OVERLAY */
+.preview-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,.8);
+    display: none;
+    align-items: center;
+    justify-content: center;
+    z-index: 10000;
+}
+
+.preview-overlay:target {
+    display: flex;
+}
+
+.preview-box {
+    background: #fff;
+    max-width: 90vw;
+    max-height: 90vh;
+    border-radius: 12px;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+}
+
+.preview-header {
+    background: #2e7d32;
+    color: white;
+    padding: 10px 14px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.preview-body {
+    padding: 12px;
+    overflow: auto;
+}
+
+.preview-image {
+    max-width: 100%;
+    max-height: 80vh;
+    object-fit: contain;
+    display: block;
+    margin: auto;
+}
+
+.profile-photo-wrapper {
+    position: relative;
+    width: 140px;
+}
+
+.profile-photo-box {
+    width: 140px;
+    height: 140px;
+    border-radius: 16px;
+    overflow: hidden;
+    border: 3px solid #81c784;
+    background: #eee;
+}
+
+.profile-photo-img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover; /* 🔑 ini kunci jadi kotak */
+}
+
+.profile-photo-delete {
+    position: absolute;
+    bottom: -10px;
+    right: -10px;
+}
+
+<style>
+/* FLOATING BUTTON */
+.dev-float-btn {
+    position: fixed;
+    bottom: 24px;
+    right: 24px;
+    z-index: 999;
+}
+.dev-float-btn a {
+    width: 52px;
+    height: 52px;
+    background: #2e7d32;
+    color: white;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 8px 20px rgba(0,0,0,.25);
+}
+
+/* OVERLAY */
+.dev-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,.55);
+    display: none;
+    align-items: center;
+    justify-content: center;
+    z-index: 9999;
+}
+.dev-overlay:target {
+    display: flex;
+}
+
+/* BOX */
+.dev-box {
+    background: white;
+    width: 320px;
+    border-radius: 16px;
+    overflow: hidden;
+}
+.dev-header {
+    background: #2e7d32;
+    color: white;
+    padding: 12px 16px;
+    display: flex;
+    justify-content: space-between;
+}
+.dev-close {
+    color: white;
+    text-decoration: none;
+}
+.dev-body {
+    padding: 20px;
+}
+.dev-photo {
+    width: 120px;
+    height: 120px;
+    border-radius: 50%;
+    object-fit: cover;
+}
+
+/* FLOATING BUTTON */
+.dev-float-btn{
+    position: fixed;
+    right: 20px;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 56px;
+    height: 56px;
+    background: #2e7d32;
+    color: #fff;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 9999;
+    box-shadow: 0 8px 20px rgba(0,0,0,.25);
+    font-size: 22px;
+    text-decoration: none;
+}
+
+/* OVERLAY */
+.dev-overlay{
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,.55);
+    display: none;
+    align-items: center;
+    justify-content: center;
+    z-index: 9999;
+}
+.dev-overlay:target{
+    display: flex;
+}
+
+/* BOX */
+.dev-box{
+    width: 360px;
+    max-width: 95%;
+    background: #fff;
+    border-radius: 16px;
+    overflow: hidden;
+}
+
+/* HEADER */
+.dev-header{
+    background: #2e7d32;
+    color: #fff;
+    padding: 12px 16px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+.dev-close{
+    color: #fff;
+    font-size: 18px;
+    text-decoration: none;
+}
+
+/* BODY */
+.dev-body{
+    padding: 20px;
+}
+.dev-photo{
+    width: 120px;
+    height: 120px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 3px solid #c8e6c9;
+}
+
+/* SOSMED */
+.dev-social{
+    display: flex;
+    justify-content: center;
+    gap: 16px;
+    font-size: 22px;
+}
+.dev-social a{
+    color: #2e7d32;
+}
+
+
+/* ANIMATION */
+@keyframes zoom {
+    from { transform: scale(.9); opacity: 0; }
+    to { transform: scale(1); opacity: 1; }
+}
+</style>

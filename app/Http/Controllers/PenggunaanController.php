@@ -42,13 +42,20 @@ class PenggunaanController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-            'nama_penggunaan' => 'required|string|max:50|unique:penggunaan,nama_penggunaan',
-            'keterangan'      => 'required|string|max:200',
-        ]);
+        'nama_penggunaan' => 'required|string|max:50|unique:penggunaan,nama_penggunaan',
+        'keterangan'      => 'required|string|max:200',
+    ]);
+    $lastId = Penggunaan::max('jenis_id');
+    $nextId = $lastId ? $lastId + 1 : 1;
 
-        Penggunaan::create($request->all());
+    Penggunaan::create([
+        'nama_penggunaan' => $request->nama_penggunaan,
+        'keterangan'      => $request->keterangan,
+    ]);
 
-        return redirect()->route('pages.penggunaan.index')->with('success', 'Data penggunaan berhasil ditambahkan!');
+    return redirect()
+        ->route('penggunaan.index')
+        ->with('success', 'Data penggunaan berhasil ditambahkan!');
     }
 
     /**
@@ -64,24 +71,29 @@ class PenggunaanController extends Controller
      */
     public function edit(string $id)
     {
-        $penggunaan = Penggunaan::first(); // ambil data pertama dulu
-        return view('pages.penggunaan.edit', compact('penggunaan'));
+        $penggunaan = Penggunaan::findOrFail($id);
+    return view('pages.penggunaan.edit', compact('penggunaan'));
     }
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request)
-    {
-        $penggunaan = Penggunaan::findOrFail($request->id);
+    public function update(Request $request, string $id)
+{
+    $penggunaan = Penggunaan::findOrFail($id);
 
-        $penggunaan->update([
-            'nama_penggunaan' => $request->nama_penggunaan,
-            'keterangan'      => $request->keterangan,
-        ]);
+    $request->validate([
+        'nama_penggunaan' => 'required|string|max:50',
+        'keterangan'      => 'required|string|max:200',
+    ]);
 
-        return redirect()->route('penggunaan.index')->with('success', 'Data berhasil diperbarui.');
-    }
+    $penggunaan->update($request->only('nama_penggunaan', 'keterangan'));
+
+    return redirect()
+        ->route('penggunaan.index')
+        ->with('success', 'Data berhasil diperbarui.');
+}
+
     /**
      * Remove the specified resource from storage.
      */

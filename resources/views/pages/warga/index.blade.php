@@ -66,7 +66,7 @@
                                     <p class="text-muted small mb-1"><i data-feather="credit-card"
                                             class="me-2 text-secondary"></i>{{ $item->no_ktp }}</p>
                                     <p class="text-muted small mb-3"><i data-feather="map-pin"
-                                            class="me-2 text-secondary"></i>{{ $item->alamat }}</p> {{-- ALAMAT TAMBAHAN --}}
+                                            class="me-2 text-secondary"></i>{{ $item->alamat }}</p> 
                                     <p class="text-muted small mb-1"><i data-feather="phone"
                                             class="me-2 text-secondary"></i>{{ $item->telp }}</p>
                                     <p class="text-muted small mb-1"><i data-feather="mail"
@@ -76,10 +76,11 @@
 
                                     {{-- TOMBOL CRUD PER ITEM --}}
                                     <div class="d-flex justify-content-between gap-2">
-                                        <a href="{{ route('warga.show', $item->warga_id) }}"
-                                            class="btn btn-sm btn-outline-info rounded-pill d-flex align-items-center gap-1 px-3">
-                                            <i data-feather="eye"></i> <span>Detail</span>
-                                        </a>
+                                        <a href="#detail-warga-{{ $item->warga_id }}"
+   class="btn btn-sm btn-outline-info rounded-pill d-flex align-items-center gap-1 px-3">
+    <i data-feather="eye"></i> <span>Detail</span>
+</a>
+
                                         <a href="{{ route('warga.edit', $item->warga_id) }}"
                                             class="btn btn-sm btn-outline-success rounded-pill d-flex align-items-center gap-1 px-3">
                                             <i data-feather="edit-3"></i> <span>Edit</span>
@@ -108,6 +109,89 @@
                     {{ $warga->links('pagination::bootstrap-5') }}
                 </div>
             </div>
+            {{-- DETAIL OVERLAY WARGA --}}
+@foreach ($warga as $item)
+<div id="detail-warga-{{ $item->warga_id }}" class="detail-overlay">
+    <div class="detail-box">
+
+        {{-- HEADER --}}
+        <div class="detail-header">
+            <h5>Detail Warga</h5>
+            <a href="#" class="close-btn">✕</a>
+        </div>
+
+        {{-- BODY --}}
+        <div class="detail-body">
+
+            {{-- FOTO (JIKA ADA) --}}
+            @if ($item->foto)
+                <div class="detail-image-single mb-3">
+                    <img src="{{ asset('storage/'.$item->foto) }}"
+                         class="detail-image-large">
+                </div>
+            @endif
+
+            {{-- DATA GRID --}}
+            <div class="detail-grid">
+                <div>
+                    <strong>Nama</strong>
+                    <div>{{ $item->nama }}</div>
+                </div>
+
+                <div>
+    <strong>ID Warga</strong>
+    <div class="fw-semibold text-success">
+        {{ $item->warga_id }}
+    </div>
+</div>
+
+
+                <div>
+                    <strong>Pekerjaan</strong>
+                    <div>{{ $item->pekerjaan ?? '-' }}</div>
+                </div>
+
+                <div>
+                    <strong>Jenis Kelamin</strong>
+                    <div>{{ $item->jenis_kelamin ?? '-' }}</div>
+                </div>
+
+                <div>
+                    <strong>No KTP</strong>
+                    <div>{{ $item->no_ktp }}</div>
+                </div>
+
+                <div>
+                    <strong>No Telp</strong>
+                    <div>{{ $item->telp }}</div>
+                </div>
+
+                <div>
+                    <strong>Email</strong>
+                    <div>{{ $item->email }}</div>
+                </div>
+
+                <div style="grid-column: 1 / -1;">
+                    <strong>Alamat</strong>
+                    <div>{{ $item->alamat }}</div>
+                </div>
+
+                <div>
+                    <strong>Dibuat</strong>
+                    <div>{{ $item->created_at->format('d M Y') }}</div>
+                </div>
+
+                <div>
+                    <strong>Update</strong>
+                    <div>{{ $item->updated_at->format('d M Y') }}</div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
+@endforeach
+
         </section>
     </div>
 

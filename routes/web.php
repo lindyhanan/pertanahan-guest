@@ -8,6 +8,7 @@ use App\Http\Controllers\PersilController;
 use App\Http\Controllers\PertanahanController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\WargaController;
+use App\Http\Controllers\MediaController;
 use Illuminate\Support\Facades\Route;
 
 Route::resource('jenis', JenisController::class);
@@ -33,8 +34,14 @@ Route::get('/', [DashboardController::class, 'index'])
 Route::get('/pertanahan', [PertanahanController::class, 'index']);
 
 Route::resource('persil', PersilController::class);
-Route::post('persil/{persil}/media/{media}/delete', [PersilController::class, 'destroyMedia'])
-    ->name('persil.media.destroy');
+Route::delete(
+    '/persil/{persil}/media/{media}',
+    [PersilController::class, 'destroyMedia']
+)->name('persil.media.destroy');
+
+Route::delete('/user/{user}/photo', [UserController::class, 'destroyPhoto'])
+    ->name('user.photo.destroy');
+
 
 Route::group(['middleware' => ['checkrole:admin']], function () {
     Route::resource('user', UserController::class);

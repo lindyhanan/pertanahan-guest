@@ -30,6 +30,16 @@
                         @csrf
                         <div class="row">
                             <div class="col-md-6 mb-3">
+    <label class="form-label text-secondary fw-semibold">
+        ID Penggunaan
+    </label>
+    <input type="text"
+           class="form-control"
+           value="{{ $penggunaan->jenis_id }}"
+           disabled>
+</div>
+
+                            <div class="col-md-6 mb-3">
                                 <label class="form-label text-secondary fw-semibold">Nama Penggunaan</label>
                                 <input type="text" name="nama_penggunaan" class="form-control border-success-subtle"
                                     value="{{ old('nama_penggunaan', $penggunaan->nama_penggunaan ?? '') }}" required>

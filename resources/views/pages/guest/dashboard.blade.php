@@ -225,4 +225,44 @@
             </a>
         </div>
     </section>
+    {{-- FLOATING DEVELOPER BUTTON --}}
+<a href="#developer-info" class="dev-float-btn" title="Tentang Pengembang">
+    <i class="fas fa-user"></i>
+</a>
+<div id="developer-info" class="dev-overlay">
+    <div class="dev-box">
+
+        <div class="dev-header">
+            <strong>Identitas Pengembang</strong>
+            <a href="#" class="dev-close">✕</a>
+        </div>
+
+        <div class="dev-body text-center">
+
+            {{-- FOTO ASLI --}}
+            <img src="{{ asset('assets/img/lindy.jpg') }}"
+                 class="dev-photo mb-3"
+                 alt="Foto Pengembang">
+
+            <h5 class="fw-bold mb-1">Lindy Hanantyas Suci</h5>
+            <p class="text-muted mb-2">NIM 2457301074</p>
+            <p class="text-muted mb-3">Prodi Sistem Informasi</p>
+
+            {{-- SOSMED --}}
+            <div class="dev-social">
+                <a href="https://linkedin.com/in/lindy-hanantyas-suci-066b29309" target="_blank">
+                    <i class="fab fa-linkedin"></i>
+                </a>
+                <a href="https://github.com/lindyhanan" target="_blank">
+                    <i class="fab fa-github"></i>
+                </a>
+                <a href="https://instagram.com/lindyhanntys" target="_blank">
+                    <i class="fab fa-instagram"></i>
+                </a>
+            </div>
+
+        </div>
+    </div>
+</div>
+
 @endsection

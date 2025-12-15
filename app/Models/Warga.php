@@ -12,6 +12,7 @@ class Warga extends Model
     protected $primaryKey = 'warga_id';
     protected $fillable   = [
         'nama',
+        'warga_id',
         'no_ktp',
         'alamat', // <-- Tambahkan alamat
         'jenis_kelamin',
