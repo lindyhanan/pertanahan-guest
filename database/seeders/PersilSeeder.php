@@ -1,10 +1,9 @@
 <?php
-
 namespace Database\Seeders;
 
+use Faker\Factory as Faker;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
-use Faker\Factory as Faker;
 
 class PersilSeeder extends Seeder
 {
@@ -16,7 +15,7 @@ class PersilSeeder extends Seeder
         $faker = Faker::create('id_ID');
 
         // Ambil semua ID warga dan penggunaan
-        $wargaIds = DB::table('warga')->pluck('warga_id')->toArray();
+        $wargaIds      = DB::table('warga')->pluck('warga_id')->toArray();
         $penggunaanIds = DB::table('penggunaan')->pluck('jenis_id')->toArray(); // pastikan tabel penggunaan benar
 
         // Cek kalau kosong, jangan lanjut
