@@ -1,7 +1,7 @@
 <?php
 namespace App\Http\Controllers;
 
-use App\Models\Media;
+use App\Models\media;
 use App\Models\Persil;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
@@ -169,24 +169,24 @@ class PersilController extends Controller
      * Route: POST /persil/{persil}/media/{media}/delete
      */
     public function destroyMedia($persilId, $mediaId)
-{
-    $media = Media::where('media_id', $mediaId)
-        ->where('ref_table', 'persil')
-        ->where('ref_id', $persilId)
-        ->firstOrFail();
+    {
+        $media = Media::where('media_id', $mediaId)
+            ->where('ref_table', 'persil')
+            ->where('ref_id', $persilId)
+            ->firstOrFail();
 
-    // HAPUS FILE FISIK
-    if ($media->file_url && Storage::disk('public')->exists($media->file_url)) {
-        Storage::disk('public')->delete($media->file_url);
+        // HAPUS FILE FISIK
+        if ($media->file_url && Storage::disk('public')->exists($media->file_url)) {
+            Storage::disk('public')->delete($media->file_url);
+        }
+
+        // HAPUS DB
+        $media->delete();
+
+        return redirect()
+            ->back()
+            ->withFragment('detail-' . $persilId)
+            ->with('success', 'File berhasil dihapus');
+
     }
-
-    // HAPUS DB
-    $media->delete();
-
-    return redirect()
-    ->back()
-    ->withFragment('detail-' . $persilId)
-    ->with('success', 'File berhasil dihapus');
-
-}
 }
