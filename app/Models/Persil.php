@@ -1,22 +1,23 @@
 <?php
-
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Model;
 use App\Models\DokumenPersil;
+use Illuminate\Database\Eloquent\Model;
 
 class Persil extends Model
 {
-    protected $table = 'persil';
-    protected $primaryKey = 'persil_id';
-    protected $fillable = [
+    protected $table      = 'persil';
+    protected $primaryKey = 'persil_id'; // sesuaikan dengan kolom PK di tabel
+    public $incrementing  = true;        // jika auto increment
+    protected $keyType    = 'int';
+    protected $fillable   = [
         'kode_persil',
         'pemilik_warga_id',
         'luas_m2',
         'penggunaan',
         'alamat_lahan',
         'rt',
-        'rw'
+        'rw',
     ];
 
     public function dokumen()
@@ -25,9 +26,9 @@ class Persil extends Model
     }
 
     public function media()
-{
-    return $this->hasMany(Media::class, 'ref_id')
-        ->where('ref_table', 'persil');
-}
+    {
+        return $this->hasMany(Media::class, 'ref_id')
+            ->where('ref_table', 'persil');
+    }
 
 }

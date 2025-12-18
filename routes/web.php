@@ -2,13 +2,15 @@
 use App\Http\Controllers\AboutController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\DokumenPersilController;
 use App\Http\Controllers\JenisController;
 use App\Http\Controllers\PenggunaanController;
 use App\Http\Controllers\PersilController;
 use App\Http\Controllers\PertanahanController;
+use App\Http\Controllers\PetaPersilController;
+use App\Http\Controllers\SengketaPersilController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\WargaController;
-use App\Http\Controllers\MediaController;
 use Illuminate\Support\Facades\Route;
 
 Route::resource('jenis', JenisController::class);
@@ -42,7 +44,10 @@ Route::delete(
 Route::delete('/user/{user}/photo', [UserController::class, 'destroyPhoto'])
     ->name('user.photo.destroy');
 
-
 Route::group(['middleware' => ['checkrole:admin']], function () {
     Route::resource('user', UserController::class);
 });
+
+Route::resource('dokumen_persil', DokumenPersilController::class);
+Route::resource('peta_persil', PetaPersilController::class);
+Route::resource('sengketa_persil', SengketaPersilController::class);

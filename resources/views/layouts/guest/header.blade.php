@@ -4,8 +4,8 @@
 
         {{-- Logo / Title --}}
         <a class="navbar-brand d-flex align-items-center fw-bold text-white" href="{{ route('dashboard.index') }}">
-    <img src="{{ asset('assets/img/logo_pertanahan.png') }}" 
-         alt="Logo Pertanahan" 
+    <img src="{{ asset('assets/img/logo_pertanahan.png') }}"
+         alt="Logo Pertanahan"
          class="me-2"
          style="height:40px; width:auto; object-fit:contain;">
 
@@ -52,39 +52,32 @@
                         </li>
                     </ul>
                 </li>
-                <li class="nav-item dropdown position-relative">
-                    <a class="nav-link dropdown-toggle text-white fw-semibold px-3" href="#" id="menuPersil"
-                        role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                        <i data-feather="file-text" class="me-1"></i> Persil
-                    </a>
-                    <ul class="dropdown-menu shadow-sm border-0 rounded-3 custom-dropdown" aria-labelledby="menuPersil">
-                        <li>
-                            <a class="dropdown-item" href="{{ route('persil.index') }}">
-                                <i data-feather="file" class="me-2 text-success"></i> Data Persil
-                            </a>
-                            <a class="dropdown-item" href="{{ route('persil.create') }}">
-                                <i data-feather="file-plus" class="me-2 text-success"></i> Tambah Persil
-                            </a>
-                        </li>
-                    </ul>
-                </li>
-                {{-- Warga --}}
-                <li class="nav-item dropdown position-relative">
-                    <a class="nav-link dropdown-toggle text-white fw-semibold px-3" href="#" id="Warga"
-                        role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                        <i data-feather="users" class="me-1"></i> Warga
-                    </a>
-                    <ul class="dropdown-menu shadow-sm border-0 rounded-3 custom-dropdown" aria-labelledby="Warga">
-                        <li>
-                            <a class="dropdown-item" href="{{ route('warga.index') }}">
-                                <i data-feather="user-plus" class="me-2 text-success"></i> Data Warga
-                            </a>
-                            <a class="dropdown-item" href="{{ route('warga.create') }}">
-                                <i data-feather="user-plus" class="me-2 text-success"></i> Tambah Warga
-                            </a>
-                        </li>
-                    </ul>
-                </li>
+               <li class="nav-item dropdown position-relative">
+    <a class="nav-link dropdown-toggle text-white fw-semibold px-3" href="#" id="menuPersil"
+        role="button" data-bs-toggle="dropdown" aria-expanded="false">
+        <i data-feather="file-text" class="me-1"></i> Persil
+    </a>
+    <ul class="dropdown-menu shadow-sm border-0 rounded-3 custom-dropdown" aria-labelledby="menuPersil">
+        <li>
+            <a class="dropdown-item" href="{{ route('persil.index') }}">
+                <i data-feather="file" class="me-2 text-success"></i> Data Persil
+            </a>
+            <a class="dropdown-item" href="{{ route('persil.create') }}">
+                <i data-feather="file-plus" class="me-2 text-success"></i> Tambah Persil
+            </a>
+            <a class="dropdown-item" href="{{ route('dokumen_persil.index') }}">
+                <i data-feather="file-text" class="me-2 text-success"></i> Dokumen Persil
+            </a>
+            <a class="dropdown-item" href="{{ route('peta_persil.index') }}">
+                <i data-feather="map-pin" class="me-2 text-success"></i> Peta Persil
+            </a>
+            <a class="dropdown-item" href="{{ route('sengketa_persil.index') }}">
+                <i data-feather="alert-triangle" class="me-2 text-success"></i> Sengketa Persil
+            </a>
+        </li>
+    </ul>
+</li>
+
 
                 {{-- User --}}
                 <li class="nav-item dropdown">

@@ -4,7 +4,7 @@ namespace Database\Seeders;
 
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Database\Console\Seeds\WithoutModelEvents;
+use Faker\Factory as Faker;
 
 class PersilSeeder extends Seeder
 {
@@ -13,22 +13,29 @@ class PersilSeeder extends Seeder
      */
     public function run(): void
     {
-        $faker = Factory::create('id_ID');
+        $faker = Faker::create('id_ID');
 
-        $wargaIds = DB::table('warga')->pluck('warga_id');
-        $penggunaanIds = DB::table('jenis_penggunaan')->pluck('jenis_id');
+        // Ambil semua ID warga dan penggunaan
+        $wargaIds = DB::table('warga')->pluck('warga_id')->toArray();
+        $penggunaanIds = DB::table('penggunaan')->pluck('jenis_id')->toArray(); // pastikan tabel penggunaan benar
 
-        for ($i = 1; $i <= 150; $i++) {
+        // Cek kalau kosong, jangan lanjut
+        if (empty($wargaIds) || empty($penggunaanIds)) {
+            $this->command->error('Seeder gagal: Pastikan tabel warga dan penggunaan sudah diisi!');
+            return;
+        }
+
+        for ($i = 1; $i <= 100; $i++) {
             DB::table('persil')->insert([
-                'kode_persil' => 'PRS-' . str_pad($i, 4, '0', STR_PAD_LEFT),
+                'kode_persil'      => 'PERSIL-' . strtoupper($faker->bothify('??##??')),
                 'pemilik_warga_id' => $faker->randomElement($wargaIds),
-                'penggunaan_id' => $faker->randomElement($penggunaanIds),
-                'luas_m2' => $faker->numberBetween(100, 5000),
-                'alamat_lahan' => $faker->streetAddress(),
-                'rt' => '01',
-                'rw' => '02',
-                'created_at' => now(),
-                'updated_at' => now(),
+                'luas_m2'          => $faker->randomFloat(2, 100, 5000),
+                'penggunaan_id'    => $faker->randomElement($penggunaanIds),
+                'alamat_lahan'     => $faker->streetAddress,
+                'rt'               => str_pad($faker->numberBetween(1, 20), 3, '0', STR_PAD_LEFT),
+                'rw'               => str_pad($faker->numberBetween(1, 10), 3, '0', STR_PAD_LEFT),
+                'created_at'       => now(),
+                'updated_at'       => now(),
             ]);
         }
     }
