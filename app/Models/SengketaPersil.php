@@ -17,7 +17,7 @@ class SengketaPersil extends Model
 
     public function media()
     {
-        return $this->hasMany(Media::class, 'ref_id', 'sengketa_id')
+        return $this->hasMany(media::class, 'ref_id', 'sengketa_id')
             ->where('ref_table', 'sengketa_persil');
     }
 }

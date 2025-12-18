@@ -27,7 +27,7 @@ class Persil extends Model
 
     public function media()
     {
-        return $this->hasMany(Media::class, 'ref_id')
+        return $this->hasMany(media::class, 'ref_id')
             ->where('ref_table', 'persil');
     }
 
