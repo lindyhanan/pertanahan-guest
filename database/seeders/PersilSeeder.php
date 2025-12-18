@@ -29,7 +29,7 @@ class PersilSeeder extends Seeder
                 'kode_persil'      => 'PERSIL-' . strtoupper($faker->bothify('??##??')),
                 'pemilik_warga_id' => $faker->randomElement($wargaIds),
                 'luas_m2'          => $faker->randomFloat(2, 100, 5000),
-                'penggunaan_id'    => $faker->randomElement($penggunaanIds),
+                'penggunaan'       => $faker->randomElement($penggunaanIds),
                 'alamat_lahan'     => $faker->streetAddress,
                 'rt'               => str_pad($faker->numberBetween(1, 20), 3, '0', STR_PAD_LEFT),
                 'rw'               => str_pad($faker->numberBetween(1, 10), 3, '0', STR_PAD_LEFT),
