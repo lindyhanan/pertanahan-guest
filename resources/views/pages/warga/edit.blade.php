@@ -113,14 +113,6 @@
                         </select>
                     </div>
 
-                    {{-- ALAMAT --}}
-                    <div class="col-12">
-                        <label class="form-label fw-semibold">Alamat</label>
-                        <textarea name="alamat"
-                                  class="form-control"
-                                  rows="3">{{ old('alamat', $warga->alamat) }}</textarea>
-                    </div>
-
                     {{-- FILE / FOTO --}}
                     <div class="col-12">
                         <label class="form-label fw-semibold">

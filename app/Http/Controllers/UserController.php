@@ -116,7 +116,11 @@ class UserController extends Controller
             ->route('user.index')
             ->with('success', 'User berhasil diperbarui.');
     }
-
+//    public function show($id)
+//     {
+//         $user = User::with('media')->findOrFail($id);
+//         return view('pages.user.show', compact('user'));
+//     }
     /**
      * Hapus data user.
      */

@@ -78,6 +78,33 @@
     </ul>
 </li>
 
+{{-- Warga --}}
+<li class="nav-item dropdown">
+    <a class="nav-link dropdown-toggle text-white fw-semibold px-3"
+       href="#"
+       id="menuWarga"
+       role="button"
+       data-bs-toggle="dropdown"
+       aria-expanded="false">
+        <i data-feather="users" class="me-1"></i> Warga
+    </a>
+
+    <ul class="dropdown-menu shadow-sm border-0 rounded-3"
+        aria-labelledby="menuWarga">
+        <li>
+            <a class="dropdown-item" href="{{ route('warga.index') }}">
+                <i data-feather="list" class="me-2 text-success"></i>
+                Data Warga
+            </a>
+        </li>
+        <li>
+            <a class="dropdown-item" href="{{ route('warga.create') }}">
+                <i data-feather="user-plus" class="me-2 text-success"></i>
+                Tambah Warga
+            </a>
+        </li>
+    </ul>
+</li>
 
                 {{-- User --}}
                 <li class="nav-item dropdown">
@@ -98,6 +125,7 @@
                         </li>
                     </ul>
                 </li>
+                
 
                 {{-- Profile --}}
                 @auth

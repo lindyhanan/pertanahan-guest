@@ -20,8 +20,7 @@ class WargaController extends Controller
         ->when($search, function ($query, $search) {
             $query->where(function ($q) use ($search) {
                 $q->where('nama', 'like', "%{$search}%")
-                  ->orWhere('no_ktp', 'like', "%{$search}%")
-                  ->orWhere('alamat', 'like', "%{$search}%");
+                  ->orWhere('no_ktp', 'like', "%{$search}%");
             });
         })
         ->when($jenis_kelamin, function ($query, $jenis_kelamin) {
@@ -58,7 +57,6 @@ class WargaController extends Controller
         $validated = $request->validate([
             'nama'          => 'required|string|max:255',
             'no_ktp'        => 'required|string|max:20',
-            'alamat'        => 'nullable|string|max:255',
             'jenis_kelamin' => 'required|string',
             'agama'         => 'nullable|string',
             'pekerjaan'     => 'nullable|string',
@@ -100,7 +98,6 @@ class WargaController extends Controller
             'telp'          => 'nullable|string|max:20',
             'email'         => 'nullable|email',
             'jenis_kelamin' => 'nullable|string',
-            'alamat'        => 'nullable|string',
             'foto'          => 'nullable|image|max:5120',
         ]);
 

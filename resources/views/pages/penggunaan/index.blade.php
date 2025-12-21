@@ -3,35 +3,63 @@
 @section('content')
 <div class="content-wrapper py-4">
 <section class="content">
-<div class="container-fluid">
+{{-- HEADER --}}
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h4 class="fw-bold text-success">
+        🌿 Data Penggunaan Lahan
+    </h4>
 
-    {{-- FILTER --}}
-    <form method="GET" action="{{ route('penggunaan.index') }}" class="mb-4 row g-2 align-items-center">
-        <div class="col-md-6">
-            <input type="text"
-                   name="search"
-                   class="form-control"
-                   placeholder="Cari nama atau keterangan..."
-                   value="{{ $search ?? '' }}">
-        </div>
-        <div class="col-md-2 d-flex gap-2">
-            <button class="btn btn-success">Cari</button>
-            <a href="{{ route('penggunaan.index') }}" class="btn btn-outline-secondary">Reset</a>
-        </div>
-    </form>
-
-    {{-- ACTION --}}
-    <div class="d-flex justify-content-end mb-3 gap-2">
+    <div class="d-flex gap-2">
         <a href="{{ route('penggunaan.create') }}"
-           class="btn rounded-pill px-3"
+           class="btn rounded-pill px-3 d-flex align-items-center gap-1"
            style="background:#388e3c;color:white;">
-            <i data-feather="plus"></i> Tambah Penggunaan
+            <i data-feather="plus"></i>
+            Tambah Penggunaan
         </a>
+
         <a href="{{ route('dashboard.index') }}"
-           class="btn btn-outline-success rounded-pill px-3">
-            <i data-feather="arrow-left"></i> Kembali
+           class="btn btn-outline-success rounded-pill px-3 d-flex align-items-center gap-1">
+            <i data-feather="arrow-left"></i>
+            Kembali
         </a>
     </div>
+</div>
+
+
+   {{-- FILTER --}}
+<div class="card border-0 shadow-sm mb-4" style="border-radius:12px;">
+    <div class="card-body py-3">
+
+        <form method="GET" action="{{ route('penggunaan.index') }}">
+            <div class="row g-2 align-items-center">
+
+                {{-- KIRI --}}
+                <div class="col-md-8">
+                    <input type="text"
+                           name="search"
+                           class="form-control"
+                           placeholder="Cari nama atau keterangan penggunaan..."
+                           value="{{ request('search') }}">
+                </div>
+
+                {{-- KANAN --}}
+                <div class="col-md-4 d-flex justify-content-end gap-2">
+                    <button class="btn btn-success px-4 d-flex align-items-center gap-1">
+                        <i data-feather="search" width="16"></i>
+                        Cari
+                    </button>
+
+                    <a href="{{ route('penggunaan.index') }}"
+                       class="btn btn-outline-secondary px-3">
+                        Reset
+                    </a>
+                </div>
+
+            </div>
+        </form>
+
+    </div>
+</div>
 
     {{-- GRID CARD --}}
     <div class="row">

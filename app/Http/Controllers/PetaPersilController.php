@@ -1,58 +1,76 @@
 <?php
 namespace App\Http\Controllers;
 
-use App\Models\media;
+use App\Models\Media;
 use App\Models\PetaPersil;
+use App\Models\Persil;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 
 class PetaPersilController extends Controller
 {
-    public function index()
-    {
-        $peta = PetaPersil::with(['media', 'persil'])->get();
-        return view('pages.peta_persil.index', compact('peta'));
-    }
+
+public function index(Request $request)
+{
+    $search = $request->search;
+
+    $peta = PetaPersil::with(['media', 'persil'])
+        ->when($search, function ($query) use ($search) {
+            $query->whereHas('persil', function ($q) use ($search) {
+                $q->where('kode_persil', 'like', "%{$search}%");
+            })
+            ->orWhere('peta_id', 'like', "%{$search}%");
+        })
+        ->latest()
+        ->paginate(9)
+        ->withQueryString(); // ⬅️ PENTING BIAR SEARCH TIDAK HILANG SAAT PAGINATION
+
+    return view('pages.peta_persil.index', compact('peta'));
+}
+
 
     public function create()
     {
-        return view('pages.peta_persil.create');
+$persils = Persil::orderBy('kode_persil')->get();
+
+    return view('pages.peta_persil.create', compact('persils'));
     }
 
     public function store(Request $request)
-    {
-        $request->validate([
-            'persil_id'      => 'required|exists:persil,id',
-            'geojson'        => 'required|string',
-            'persil_id'      => 'required|exists:persil,persil_id',
-            'panjang_m'      => 'required|numeric',
-            'lebar_m'        => 'required|numeric',
-            'dokumen_file.*' => 'nullable|file|mimes:jpg,jpeg,png,pdf', // sesuaikan tipe file
-        ]);
+{
+    $request->validate([
+        'persil_id'      => 'required|exists:persil,persil_id',
+        'geojson'        => 'nullable|string',
+        'panjang_m'      => 'nullable|numeric',
+        'lebar_m'        => 'nullable|numeric',
+        'dokumen_file.*' => 'nullable|file|mimes:jpg,jpeg,png,pdf|max:5120',
+    ]);
 
-        // Simpan Peta Persil
-        $peta = PetaPersil::create($request->only(['persil_id', 'geojson', 'panjang_m', 'lebar_m']));
+    $peta = PetaPersil::create([
+        'persil_id' => $request->persil_id,
+        'geojson'   => $request->geojson,
+        'panjang_m' => $request->panjang_m,
+        'lebar_m'   => $request->lebar_m,
+    ]);
 
-        // Upload file jika ada
-        if ($request->hasFile('dokumen_file')) {
-            foreach ($request->file('dokumen_file') as $file) {
-                $path = $file->store('images', 'public'); // storage/app/public/images
+    if ($request->hasFile('dokumen_file')) {
+        foreach ($request->file('dokumen_file') as $file) {
+            $path = $file->store('peta_persil', 'public');
 
-                $peta->media()->create([
-                    'ref_table' => 'peta_persil',
-                    'file_url'  => $path,
-                ]);
-            }
+            Media::create([
+                'ref_table' => 'peta_persil',
+                'ref_id'    => $peta->peta_id,
+                'file_url'  => $path,
+                'mime_type' => $file->getClientMimeType(),
+            ]);
         }
-
-        return redirect()->route('peta_persil.index')->with('success', 'Data berhasil disimpan.');
     }
 
-    public function edit($id)
-    {
-        $p = PetaPersil::findOrFail($id);
-        return view('pages.peta_persil.edit', compact('p'));
-    }
+    return redirect()
+        ->route('peta_persil.index')
+        ->with('success', 'Peta persil berhasil disimpan.');
+}
+
 
     public function update(Request $request, $id)
     {
@@ -64,36 +82,66 @@ class PetaPersilController extends Controller
             'dokumen_file.*' => 'nullable|file|mimes:jpg,jpeg,png,pdf',
         ]);
 
-        $p = PetaPersil::findOrFail($id);
-        $p->update($request->only(['persil_id', 'geojson', 'panjang_m', 'lebar_m']));
+        $peta = PetaPersil::findOrFail($id);
+        $peta->update(
+            $request->only(['persil_id', 'geojson', 'panjang_m', 'lebar_m'])
+        );
 
-        // Upload file baru jika ada
         if ($request->hasFile('dokumen_file')) {
             foreach ($request->file('dokumen_file') as $file) {
-                $path = $file->store('images', 'public'); // path di storage/app/public/images
+                $path = $file->store('media', 'public');
 
-                $p->media()->create([
+                Media::create([
                     'ref_table' => 'peta_persil',
-                    'file_url'  => $path, // pastikan nama kolom sesuai database
+                    'ref_id'    => $peta->peta_id, // 🔑 WAJIB
+                    'file_url'  => $path,
+                    'mime_type' => $file->getClientMimeType(),
                 ]);
             }
         }
 
-        return redirect()->route('peta_persil.index')->with('success', 'Peta berhasil diupdate');
+        return redirect()->route('peta_persil.index')
+            ->with('success', 'Peta berhasil diupdate');
+    }
+    public function edit($id)
+    {
+        $p = PetaPersil::findOrFail($id);
+    $persils = Persil::orderBy('kode_persil')->get();
+
+    return view('pages.peta_persil.edit', compact('p', 'persils'));
     }
 
     public function destroy($id)
     {
-        $p = PetaPersil::findOrFail($id);
+        $peta = PetaPersil::with('media')->findOrFail($id);
 
-        // Hapus file media fisik
-        foreach ($p->media as $m) {
-            Storage::delete($m->file_path);
+        foreach ($peta->media as $m) {
+            if (Storage::disk('public')->exists($m->file_url)) {
+                Storage::disk('public')->delete($m->file_url);
+            }
             $m->delete();
         }
 
-        $p->delete();
+        $peta->delete();
 
-        return redirect()->route('peta_persil.index')->with('success', 'Peta berhasil dihapus');
+        return redirect()->route('peta_persil.index')
+            ->with('success', 'Peta berhasil dihapus');
+    }
+    public function destroyMedia($petaId, $mediaId)
+    {
+        $media = Media::where('ref_table', 'peta_persil')
+            ->where('ref_id', $petaId)
+            ->where('media_id', $mediaId)
+            ->firstOrFail();
+
+        // hapus file fisik
+        if (Storage::disk('public')->exists($media->file_url)) {
+            Storage::disk('public')->delete($media->file_url);
+        }
+
+        // hapus database
+        $media->delete();
+
+        return back()->with('success', 'File berhasil dihapus.');
     }
 }

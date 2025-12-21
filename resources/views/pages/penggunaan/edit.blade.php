@@ -4,6 +4,16 @@
 <div class="content-wrapper py-4">
     <section class="content">
         <div class="container-fluid">
+            {{-- JUDUL HALAMAN --}}
+<div class="row justify-content-center mb-4">
+    <div class="col-md-10 col-lg-9 text-center">
+        <h2 class="fw-bold text-success">✍️ Edit Jenis Penggunaan</h2>
+        <p class="text-muted">
+            Perbarui informasi jenis penggunaan Anda.
+        </p>
+    </div>
+</div>
+
 
             @if (session('success'))
                 <div class="alert alert-success alert-dismissible fade show mt-2 shadow-sm border-0 d-flex align-items-center gap-2">
@@ -11,12 +21,6 @@
                     <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
                 </div>
             @endif
-
-            <div class="d-flex justify-content-end align-items-center mb-3 gap-2">
-                <a href="{{ route('penggunaan.index') }}" class="btn btn-outline-success rounded-pill d-flex align-items-center gap-1 px-3">
-                    <i data-feather="arrow-left"></i> <span>Kembali</span>
-                </a>
-            </div>
 
             <div class="card border-0 shadow-sm mb-5 rounded-3" style="background-color:#f8f9f8;">
                 <div class="card-header d-flex align-items-center gap-2" style="background-color:#2e7d32; color:white;">
@@ -52,9 +56,9 @@
                         </div>
 
                         <div class="text-end mt-3 d-flex justify-content-end gap-2">
-                            <a href="{{ route('penggunaan.index') }}" class="btn btn-outline-secondary rounded-pill d-flex align-items-center gap-1 px-3">
-                                <i data-feather="x-circle"></i> <span>Batal</span>
-                            </a>
+                            <a href="{{ route('penggunaan.index') }}" class="btn btn-outline-success rounded-pill d-flex align-items-center gap-1 px-3">
+                    <i data-feather="arrow-left"></i> <span>Kembali</span>
+                </a>
                             <button type="submit" class="btn rounded-pill d-flex align-items-center gap-1 px-4"
                                 style="background-color:#388e3c; color:white;">
                                 <i data-feather="save"></i> <span>Perbarui Data</span>

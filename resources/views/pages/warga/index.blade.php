@@ -1,212 +1,194 @@
 @extends('layouts.guest.app')
 
 @section('content')
-    <div class="content-wrapper py-4">
-        <section class="content">
-            <div class="container-fluid">
+<div class="content-wrapper py-4">
+<section class="content">
+<div class="container-fluid">
 
-                {{-- ALERT FLASH MESSAGE --}}
-                @if (session('success'))
-                    <div
-                        class="alert alert-success alert-dismissible fade show mt-2 shadow-sm border-0 d-flex align-items-center gap-2">
-                        <i data-feather="check-circle"></i> {{ session('success') }}
-                        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-                    </div>
-                @endif
+    {{-- ALERT --}}
+    @if (session('success'))
+        <div class="alert alert-success alert-dismissible fade show mt-2 shadow-sm border-0 d-flex align-items-center gap-2">
+            <i data-feather="check-circle"></i>
+            {{ session('success') }}
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+    @endif
 
-                <form method="GET" action="{{ route('warga.index') }}" class="mb-4 row g-2 align-items-center">
-                    <div class="col-md-4">
-                        <input type="text" name="search" class="form-control"
-                            placeholder="Cari nama, pekerjaan, atau email..." value="{{ $search ?? '' }}">
-                    </div>
-                    <div class="col-md-3">
-                        <select name="jenis_kelamin" class="form-select">
-                            <option value="">Semua Jenis Kelamin</option>
-                            <option value="Laki-laki" {{ ($jenis_kelamin ?? '') == 'Laki-laki' ? 'selected' : '' }}>
-                                Laki-laki</option>
-                            <option value="Perempuan" {{ ($jenis_kelamin ?? '') == 'Perempuan' ? 'selected' : '' }}>
-                                Perempuan</option>
-                        </select>
-                    </div>
-                    <div class="col-md-2 d-flex gap-2">
-                        <button class="btn btn-success" type="submit">Terapkan</button>
-                        <a href="{{ route('warga.index') }}" class="btn btn-outline-secondary">Reset</a>
-                    </div>
-                </form>
+    {{-- HEADER --}}
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h4 class="fw-bold text-success">👥 Data Warga</h4>
 
-                <div class="d-flex justify-content-end align-items-center mb-3 gap-2">
-                    <a href="{{ route('warga.create') }}" class="btn rounded-pill d-flex align-items-center gap-1 px-3"
-                        style="background-color:#388e3c; color:white;">
-                        <i data-feather="user-plus"></i> <span>Tambah Warga</span>
-                    </a>
-                    <a href="{{ route('dashboard.index') }}"
-                        class="btn btn-outline-success rounded-pill d-flex align-items-center gap-1 px-3">
-                        <i data-feather="arrow-left"></i> <span>Kembali</span>
+        <div class="d-flex gap-2">
+            <a href="{{ route('warga.create') }}"
+               class="btn rounded-pill px-3"
+               style="background:#388e3c;color:white;">
+                <i data-feather="user-plus"></i> Tambah Warga
+            </a>
+
+            <a href="{{ route('dashboard.index') }}"
+               class="btn btn-outline-success rounded-pill px-3">
+                <i data-feather="arrow-left"></i> Kembali
+            </a>
+        </div>
+    </div>
+
+    {{-- FILTER --}}
+<div class="card border-0 shadow-sm mb-4" style="border-radius:12px;">
+    <div class="card-body py-3">
+
+        <form method="GET" action="{{ route('warga.index') }}">
+
+            <div class="row g-2 align-items-center">
+
+                {{-- KIRI --}}
+                <div class="col-md-8">
+                    <div class="row g-2">
+
+                        {{-- SEARCH --}}
+                        <div class="col-md-7">
+                            <input type="text"
+                                   name="search"
+                                   class="form-control"
+                                   placeholder="Cari nama / pekerjaan / email..."
+                                   value="{{ request('search') }}">
+                        </div>
+
+                        {{-- FILTER JENIS KELAMIN --}}
+                        <div class="col-md-5">
+                            <select name="jenis_kelamin"
+                                    class="form-select">
+                                <option value="">Semua Jenis Kelamin</option>
+                                <option value="Laki-laki"
+                                    {{ request('jenis_kelamin') == 'Laki-laki' ? 'selected' : '' }}>
+                                    Laki-laki
+                                </option>
+                                <option value="Perempuan"
+                                    {{ request('jenis_kelamin') == 'Perempuan' ? 'selected' : '' }}>
+                                    Perempuan
+                                </option>
+                            </select>
+                        </div>
+
+                    </div>
+                </div>
+
+                {{-- KANAN --}}
+                <div class="col-md-4 d-flex justify-content-end gap-2">
+                    <button class="btn btn-success px-4 d-flex align-items-center gap-1">
+                        <i data-feather="search" width="16"></i>
+                        Cari
+                    </button>
+
+                    <a href="{{ route('warga.index') }}"
+                       class="btn btn-outline-secondary px-3">
+                        Reset
                     </a>
                 </div>
 
-                {{-- LIST DATA WARGA --}}
-                <div class="row">
-                    @forelse($warga as $item)
-                        <div class="col-md-4 mb-4">
-                            <div class="card border-0 shadow-sm h-100 rounded-4 hover-card overflow-hidden"
-                                style="background-color:#f5f5f5;">
-                                <div class="card-body">
-                                    <div class="d-flex align-items-center mb-3 gap-3">
-                                        <div class="rounded-circle d-flex align-items-center justify-content-center shadow-sm"
-                                            style="width:55px; height:55px; background-color:#388e3c; color:white;">
-                                            <i data-feather="user" class="fs-5"></i>
-                                        </div>
-                                        <div>
-                                            <h5 class="fw-semibold text-success mb-0">{{ $item->nama }}</h5>
-                                            <small class="text-muted">{{ $item->pekerjaan }}</small>
-                                        </div>
-                                    </div>
+            </div>
+        </form>
 
-                                    <p class="text-muted small mb-1"><i data-feather="credit-card"
-                                            class="me-2 text-secondary"></i>{{ $item->no_ktp }}</p>
-                                    <p class="text-muted small mb-3"><i data-feather="map-pin"
-                                            class="me-2 text-secondary"></i>{{ $item->alamat }}</p> 
-                                    <p class="text-muted small mb-1"><i data-feather="phone"
-                                            class="me-2 text-secondary"></i>{{ $item->telp }}</p>
-                                    <p class="text-muted small mb-1"><i data-feather="mail"
-                                            class="me-2 text-secondary"></i>{{ $item->email }}</p>
+    </div>
+</div>
 
-                                    <hr class="my-3">
 
-                                    {{-- TOMBOL CRUD PER ITEM --}}
-                                    <div class="d-flex justify-content-between gap-2">
-                                        <a href="#detail-warga-{{ $item->warga_id }}"
-   class="btn btn-sm btn-outline-info rounded-pill d-flex align-items-center gap-1 px-3">
-    <i data-feather="eye"></i> <span>Detail</span>
-</a>
 
-                                        <a href="{{ route('warga.edit', $item->warga_id) }}"
-                                            class="btn btn-sm btn-outline-success rounded-pill d-flex align-items-center gap-1 px-3">
-                                            <i data-feather="edit-3"></i> <span>Edit</span>
-                                        </a>
-                                        <form action="{{ route('warga.destroy', $item->warga_id) }}" method="POST"
-                                            onsubmit="return confirm('Yakin hapus data ini?')" class="d-inline">
-                                            @csrf
-                                            @method('DELETE')
-                                            <button
-                                                class="btn btn-sm btn-outline-danger rounded-pill d-flex align-items-center gap-1 px-3">
-                                                <i data-feather="trash-2"></i> <span>Hapus</span>
-                                            </button>
-                                        </form>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    @empty
-                        <div class="col-12 text-center text-muted py-5 d-flex flex-column align-items-center gap-3">
-                            <i data-feather="inbox" class="fs-1"></i>
-                            <p class="fs-5">Belum ada data warga.</p>
-                        </div>
-                    @endforelse
-                </div>
-                <div class="d-flex justify-content-center mt-4">
-                    {{ $warga->links('pagination::bootstrap-5') }}
+    {{-- GRID CARD --}}
+    <div class="row">
+        @forelse ($warga as $w)
+            <div class="col-md-6 col-lg-4 mb-4">
+                <div class="card border-0 shadow h-100">
+
+                    {{-- HEADER --}}
+                    <div class="card-header d-flex align-items-center gap-2"
+                         style="background:#2e7d32;color:white;">
+                        <i data-feather="user"></i>
+                        <h6 class="mb-0 fw-semibold text-truncate">
+                            {{ $w->nama }}
+                        </h6>
+                    </div>
+
+                    {{-- BODY --}}
+                    <div class="card-body" style="background:#f8f9f8;">
+                        <p><strong>ID Warga:</strong> {{ $w->warga_id }}</p>
+                        <p><strong>Pekerjaan:</strong> {{ $w->pekerjaan ?? '-' }}</p>
+                        <p><strong>Email:</strong> {{ $w->email }}</p>
+                        <p><strong>Jenis Kelamin:</strong> {{ $w->jenis_kelamin }}</p>
+                        <p><strong>Telp:</strong> {{ $w->telp }}</p>
+                    </div>
+
+                    {{-- FOOTER --}}
+                    <div class="card-footer bg-white d-flex justify-content-end gap-2">
+                        <a href="#detail-warga-{{ $w->warga_id }}"
+                           class="btn btn-sm btn-info text-white rounded-pill">
+                            <i data-feather="eye" width="14"></i> Detail
+                        </a>
+
+                        <a href="{{ route('warga.edit', $w->warga_id) }}"
+                           class="btn btn-sm btn-warning rounded-pill">
+                            <i data-feather="edit" width="14"></i> Edit
+                        </a>
+
+                        <form action="{{ route('warga.destroy', $w->warga_id) }}"
+                              method="POST"
+                              onsubmit="return confirm('Hapus data warga ini?')">
+                            @csrf
+                            @method('DELETE')
+                            <button class="btn btn-sm btn-danger rounded-pill">
+                                <i data-feather="trash-2" width="14"></i> Hapus
+                            </button>
+                        </form>
+                    </div>
+
                 </div>
             </div>
-            {{-- DETAIL OVERLAY WARGA --}}
-@foreach ($warga as $item)
-<div id="detail-warga-{{ $item->warga_id }}" class="detail-overlay">
+        @empty
+            <div class="col-12 text-center py-5 text-muted">
+                <i data-feather="inbox" class="mb-2"></i>
+                <p>Belum ada data warga.</p>
+            </div>
+        @endforelse
+    </div>
+
+    {{ $warga->links('pagination::bootstrap-5') }}
+
+</div>
+</section>
+</div>
+
+{{-- DETAIL OVERLAY --}}
+@foreach ($warga as $w)
+<div id="detail-warga-{{ $w->warga_id }}" class="detail-overlay">
     <div class="detail-box">
 
-        {{-- HEADER --}}
         <div class="detail-header">
             <h5>Detail Warga</h5>
             <a href="#" class="close-btn">✕</a>
         </div>
 
-        {{-- BODY --}}
         <div class="detail-body">
-
-            {{-- FOTO (JIKA ADA) --}}
-            @if ($item->foto)
+            @if ($w->foto)
                 <div class="detail-image-single mb-3">
-                    <img src="{{ asset('storage/'.$item->foto) }}"
-                         class="detail-image-large">
+                    <img src="{{ asset('storage/'.$w->foto) }}" class="detail-image-large">
                 </div>
             @endif
 
-            {{-- DATA GRID --}}
             <div class="detail-grid">
-                <div>
-                    <strong>Nama</strong>
-                    <div>{{ $item->nama }}</div>
-                </div>
-
-                <div>
-    <strong>ID Warga</strong>
-    <div class="fw-semibold text-success">
-        {{ $item->warga_id }}
-    </div>
-</div>
-
-
-                <div>
-                    <strong>Pekerjaan</strong>
-                    <div>{{ $item->pekerjaan ?? '-' }}</div>
-                </div>
-
-                <div>
-                    <strong>Jenis Kelamin</strong>
-                    <div>{{ $item->jenis_kelamin ?? '-' }}</div>
-                </div>
-
-                <div>
-                    <strong>No KTP</strong>
-                    <div>{{ $item->no_ktp }}</div>
-                </div>
-
-                <div>
-                    <strong>No Telp</strong>
-                    <div>{{ $item->telp }}</div>
-                </div>
-
-                <div>
-                    <strong>Email</strong>
-                    <div>{{ $item->email }}</div>
-                </div>
-
-                <div style="grid-column: 1 / -1;">
-                    <strong>Alamat</strong>
-                    <div>{{ $item->alamat }}</div>
-                </div>
-
-                <div>
-                    <strong>Dibuat</strong>
-                    <div>{{ $item->created_at->format('d M Y') }}</div>
-                </div>
-
-                <div>
-                    <strong>Update</strong>
-                    <div>{{ $item->updated_at->format('d M Y') }}</div>
-                </div>
+                <div><strong>ID</strong><div>{{ $w->warga_id }}</div></div>
+                <div><strong>Nama</strong><div>{{ $w->nama }}</div></div>
+                <div><strong>Pekerjaan</strong><div>{{ $w->pekerjaan ?? '-' }}</div></div>
+                <div><strong>Jenis Kelamin</strong><div>{{ $w->jenis_kelamin ?? '-' }}</div></div>
+                <div><strong>No KTP</strong><div>{{ $w->no_ktp }}</div></div>
+                <div><strong>Telp</strong><div>{{ $w->telp }}</div></div>
+                <div><strong>Email</strong><div>{{ $w->email }}</div></div>
             </div>
-
         </div>
+
     </div>
 </div>
 @endforeach
 
-        </section>
-    </div>
-
-    {{-- Hover card --}}
-    <style>
-        .hover-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 6px 16px rgba(0, 0, 0, 0.15);
-            transition: all 0.3s ease;
-        }
-    </style>
-
-    {{-- Feather Icons --}}
-    <script src="https://unpkg.com/feather-icons"></script>
-    <script>
-        feather.replace();
-    </script>
+<script>
+document.addEventListener('DOMContentLoaded', () => feather.replace());
+</script>
 @endsection

@@ -2,15 +2,35 @@
 namespace App\Http\Controllers;
 
 use App\Models\DokumenPersil;
-use App\Models\media;
+use App\Models\Media;
 use App\Models\Persil;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Storage;
 
 class DokumenPersilController extends Controller
 {
-    public function index()
+
+    public function index(Request $request)
     {
-        $dokumens = DokumenPersil::with(['persil', 'media'])->get();
+        $search = $request->search;
+        $jenis  = $request->jenis;
+
+        $dokumens = DokumenPersil::with(['persil', 'media'])
+            ->when($search, function ($query) use ($search) {
+                $query->where('nomor', 'like', "%{$search}%")
+                    ->orWhere('jenis_dokumen', 'like', "%{$search}%")
+                    ->orWhereHas('persil', function ($q) use ($search) {
+                        $q->where('kode_persil', 'like', "%{$search}%");
+                    });
+            })
+            ->when($jenis, function ($query) use ($jenis) {
+                $query->where('jenis_dokumen', $jenis);
+            })
+            ->latest()
+            ->paginate(9)        // ⬅️ WAJIB paginate
+            ->withQueryString(); // ⬅️ BIAR FILTER TIDAK HILANG
+
         return view('pages.dokumen_persil.index', compact('dokumens'));
     }
 
@@ -22,62 +42,100 @@ class DokumenPersilController extends Controller
 
     public function store(Request $request)
     {
-        $validated = $request->validate([
-            'persil_id'      => 'required|exists:persil,persil_id',
-            'jenis_dokumen'  => 'required|string|max:255',
-            'nomor'          => 'required|string|max:255',
-            'keterangan'     => 'nullable|string|max:500',
-            'dokumen_file.*' => 'nullable|file|mimes:pdf,jpg,jpeg,png|max:10240',
+        $request->validate([
+            'persil_id'     => 'required|exists:persil,persil_id',
+            'jenis_dokumen' => 'required|string',
+            'nomor'         => 'required|string',
+            'keterangan'    => 'nullable|string',
+            'files.*'       => 'nullable|file|mimes:jpg,jpeg,png,pdf,doc,docx|max:5120',
         ]);
 
-        $dok = DokumenPersil::create($validated);
+        DB::transaction(function () use ($request) {
 
-        if ($request->hasFile('dokumen_file')) {
-            foreach ($request->file('dokumen_file') as $file) {
-                $path = $file->store('images', 'public');
-                Media::create([
-                    'ref_table' => 'dokumen_persil',
-                    'ref_id'    => $dok->dokumen_id,
-                    'file_url'  => 'storage/' . $path,
-                ]);
+            // 1️⃣ SIMPAN DOKUMEN (PAKSA SAVE)
+            $dokumen                = new DokumenPersil();
+            $dokumen->persil_id     = $request->persil_id;
+            $dokumen->jenis_dokumen = $request->jenis_dokumen;
+            $dokumen->nomor         = $request->nomor;
+            $dokumen->keterangan    = $request->keterangan;
+            $dokumen->save();
+
+            // 2️⃣ PAKSA AMBIL ULANG ID DARI DATABASE
+            $dokumen->refresh();
+
+            // 🔥 PENGAMAN TERAKHIR
+            if (! $dokumen->dokumen_id) {
+                throw new \Exception('Gagal mendapatkan dokumen_id');
             }
-        }
 
-        return redirect()->route('dokumen_persil.index')->with('success', 'Dokumen berhasil ditambahkan.');
+            // 3️⃣ SIMPAN FILE
+            if ($request->hasFile('files')) {
+                foreach ($request->file('files') as $file) {
+
+                    $path = $file->store('dokumen_persil', 'public');
+
+                    Media::create([
+                        'ref_table' => 'dokumen_persil',
+                        'ref_id'    => $dokumen->dokumen_id,
+                        'file_url'  => $path,
+                        'mime_type' => $file->getClientMimeType(),
+                    ]);
+                }
+            }
+        });
+
+        return redirect()
+            ->route('dokumen_persil.index')
+            ->with('success', 'Dokumen berhasil disimpan');
     }
 
     public function edit(DokumenPersil $dokumenPersil)
     {
         $persils = Persil::all();
-        return view('pages.dokumen_persil.edit', compact('dokumenPersil', 'persils'));
+        $dokumen = $dokumenPersil;
+
+        return view(
+            'pages.dokumen_persil.edit',
+            compact('dokumen', 'persils')
+        );
     }
 
-    public function update(Request $request, DokumenPersil $dokumenPersil)
+    public function update(Request $request, $id)
     {
-        $validated = $request->validate([
-            'persil_id'      => 'required|exists:persil,persil_id',
-            'jenis_dokumen'  => 'required|string|max:255',
-            'nomor'          => 'required|string|max:255',
-            'keterangan'     => 'nullable|string|max:500',
-            'dokumen_file.*' => 'nullable|file|mimes:pdf,jpg,jpeg,png|max:10240',
+        $request->validate([
+            'persil_id'     => 'required|exists:persil,persil_id',
+            'jenis_dokumen' => 'required|string',
+            'nomor'         => 'required|string',
+            'keterangan'    => 'nullable|string',
+            'files.*'       => 'nullable|file|max:5120',
         ]);
 
-        // Update data utama
-        $dokumenPersil->update($validated);
+        $dokumen = DokumenPersil::findOrFail($id);
 
-        // Upload file baru
-        if ($request->hasFile('dokumen_file')) {
-            foreach ($request->file('dokumen_file') as $file) {
-                $path = $file->store('images', 'public');
+        $dokumen->update([
+            'persil_id'     => $request->persil_id,
+            'jenis_dokumen' => $request->jenis_dokumen,
+            'nomor'         => $request->nomor,
+            'keterangan'    => $request->keterangan,
+        ]);
+
+        if ($request->hasFile('files')) {
+            foreach ($request->file('files') as $file) {
+
+                $path = $file->store('dokumen_persil', 'public');
+
                 Media::create([
                     'ref_table' => 'dokumen_persil',
-                    'ref_id'    => $dokumenPersil->dokumen_id,
-                    'file_url'  => 'storage/' . $path,
+                    'ref_id'    => $dokumen->dokumen_id, // 🔥 SEKARANG PASTI ADA
+                    'file_url'  => $path,
+                    'mime_type' => $file->getClientMimeType(),
                 ]);
             }
         }
 
-        return redirect()->route('dokumen_persil.index')->with('success', 'Dokumen berhasil diupdate.');
+        return redirect()
+            ->route('dokumen_persil.index')
+            ->with('success', 'Dokumen berhasil diperbarui');
     }
 
     public function destroy(DokumenPersil $dokumenPersil)
@@ -91,5 +149,20 @@ class DokumenPersilController extends Controller
         $dokumenPersil->delete();
 
         return redirect()->route('dokumen_persil.index')->with('success', 'Dokumen berhasil dihapus.');
+    }
+    public function destroyMedia($dokumenId, $mediaId)
+    {
+        $media = Media::where('media_id', $mediaId)
+            ->where('ref_table', 'dokumen_persil')
+            ->where('ref_id', $dokumenId)
+            ->firstOrFail();
+
+        // hapus file fisik
+        Storage::disk('public')->delete($media->file_url);
+
+        // hapus record DB
+        $media->delete();
+
+        return back()->with('success', 'File berhasil dihapus');
     }
 }

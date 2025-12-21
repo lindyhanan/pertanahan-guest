@@ -40,20 +40,55 @@
     </div>
 
     {{-- FILTER --}}
-    <form method="GET" action="{{ route('persil.index') }}" class="mb-4 row g-2 align-items-center">
-        <div class="col-md-4">
-            <input type="text" name="search" class="form-control"
-                placeholder="Cari kode atau alamat..." value="{{ $search ?? '' }}">
-        </div>
-        <div class="col-md-3">
-            <input type="text" name="pemilik" class="form-control"
-                placeholder="Filter Pemilik (ID)" value="{{ $pemilik ?? '' }}">
-        </div>
-        <div class="col-md-2 d-flex gap-2">
-            <button class="btn btn-success">Terapkan</button>
-            <a href="{{ route('persil.index') }}" class="btn btn-outline-secondary">Reset</a>
-        </div>
-    </form>
+    <div class="card border-0 shadow-sm mb-4" style="border-radius:12px;">
+    <div class="card-body py-3">
+
+        <form method="GET"
+              action="{{ route('persil.index') }}">
+
+            <div class="row g-2 align-items-center">
+
+                {{-- KIRI --}}
+                <div class="col-md-8">
+                    <div class="row g-2">
+                        <div class="col-md-7">
+                            <input type="text"
+                                   name="search"
+                                   class="form-control"
+                                   placeholder="Cari kode persil / alamat..."
+                                   value="{{ request('search') }}">
+                        </div>
+
+                        <div class="col-md-5">
+                            <input type="text"
+                                   name="pemilik"
+                                   class="form-control"
+                                   placeholder="Filter pemilik (ID)"
+                                   value="{{ request('pemilik') }}">
+                        </div>
+                    </div>
+                </div>
+
+                {{-- KANAN --}}
+                <div class="col-md-4 d-flex justify-content-end gap-2">
+                    <button class="btn btn-success px-4 d-flex align-items-center gap-1">
+                        <i data-feather="search" width="16"></i>
+                        Cari
+                    </button>
+
+                    <a href="{{ route('persil.index') }}"
+                       class="btn btn-outline-secondary px-3">
+                        Reset
+                    </a>
+                </div>
+
+            </div>
+        </form>
+
+    </div>
+</div>
+
+
 
     {{-- GRID CARD --}}
     <div class="row">
@@ -74,6 +109,10 @@
     @if ($images->count())
         <img src="{{ asset('storage/'.$images->first()->file_url) }}"
              class="card-image">
+             <small class="text-danger">
+                {{ asset('storage/'.$images->first()->file_url) }}
+            </small>
+
 
         @if ($filesCount > 1)
             <span class="card-image-badge">

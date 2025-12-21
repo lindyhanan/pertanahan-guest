@@ -14,7 +14,6 @@ class Warga extends Model
         'nama',
         'warga_id',
         'no_ktp',
-        'alamat', // <-- Tambahkan alamat
         'jenis_kelamin',
         'agama',
         'pekerjaan',

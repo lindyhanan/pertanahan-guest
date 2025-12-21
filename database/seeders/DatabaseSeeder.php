@@ -1,35 +1,48 @@
 <?php
+
 namespace Database\Seeders;
 
-use App\Models\User;
-// use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
+use App\Models\User;
 use Illuminate\Support\Facades\Hash;
 
 class DatabaseSeeder extends Seeder
 {
-    /**
-     * Seed the application's database.
-     */
     public function run(): void
     {
-        // User::factory(10)->create();
+        // ===============================
+        // ADMIN UTAMA (AMAN DARI DUPLIKAT)
+        // ===============================
+        User::updateOrCreate(
+            ['email' => 'admin@gmail.com'],
+            [
+                'name'     => 'Lindy',
+                'role'     => 'admin',
+                'password' => Hash::make('lindy'),
+            ]
+        );
 
-        User::factory()->create([
-            'name'     => 'Lindy',
-            'email'    => 'admin@gmail.com',
-            'role'     => 'admin',
-            'password' => Hash::make('linday'),
-        ]);
+        // ===============================
+        // USER DUMMY (RANGE + ROLE)
+        // ===============================
+        foreach (range(1, 150) as $i) {
 
-        // $this->call([
-        //     WargaSeeder::class,
-        //     PersilSeeder::class,       // harus dulu
-        //     DokumenPersilSeeder::class,
-        // ]);
+            if ($i <= 30) {
+                $role = 'admin';
+            } elseif ($i <= 40) {
+                $role = 'staff';
+            } else {
+                $role = 'klien';
+            }
 
-        // $this->call([
-        //     PertahananSeeder::class,
-        // ]);
+            User::updateOrCreate(
+                ['email' => "{$role}{$i}@gmail.com"],
+                [
+                    'name'     => ucfirst($role) . " $i",
+                    'role'     => $role,
+                    'password' => Hash::make('password'),
+                ]
+            );
+        }
     }
 }

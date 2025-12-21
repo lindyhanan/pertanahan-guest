@@ -2,6 +2,7 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use App\Models\Media;
 
 class SengketaPersil extends Model
 {
@@ -17,7 +18,7 @@ class SengketaPersil extends Model
 
     public function media()
     {
-        return $this->hasMany(media::class, 'ref_id', 'sengketa_id')
+        return $this->hasMany(Media::class, 'ref_id', 'sengketa_id')
             ->where('ref_table', 'sengketa_persil');
     }
 }

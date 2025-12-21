@@ -136,14 +136,52 @@
     display: flex;
 }
 
+.card-header {
+    border-radius: 0 !important;
+}
+/* CARD UTAMA */
+.peta-card {
+    border-radius: 14px;
+    overflow: hidden;
+}
+
+/* GAMBAR */
+.card-image-wrapper {
+    height: 150px;              /* JANGAN LEBIH */
+    background: #e9ecef;
+    overflow: hidden;
+}
+
+.card-image-wrapper img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+/* HEADER HIJAU */
+.peta-card .card-header {
+    border-radius: 0 !important;
+    margin: 0;
+}
+
+/* BODY */
+.peta-card .card-body {
+    padding: 16px;
+}
+
+/* FOOTER */
+.peta-card .card-footer {
+    padding: 14px;
+}
 
 /* BOX */
 .detail-box {
     background: #fff;
     width: 700px;
     max-width: 95vw;
-    max-height: 90vh;       /* 🔑 jangan lebih tinggi layar */
+    max-height: 90vh;
     border-radius: 16px;
+    overflow: hidden; /* 🔑 PALING PENTING */
     display: flex;
     flex-direction: column;
 }
@@ -157,12 +195,68 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
+
+    /* radius atas */
+    border-top-left-radius: 16px;
+    border-top-right-radius: 16px;
+}
+.card-image-wrapper img {
+    transition: transform .4s ease;
+}
+ .card.dokumen-card {
+        border-top: none !important;
+    }
+
+.card:hover .card-image-wrapper img {
+    transform: scale(1.05);
+}
+.peta-preview {
+    height: 120px;
+    border-radius: 12px;
+    background: repeating-linear-gradient(
+        45deg,
+        #e8f5e9,
+        #e8f5e9 10px,
+        #c8e6c9 10px,
+        #c8e6c9 20px
+    );
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.peta-box {
+    background: white;
+    padding: 8px 14px;
+    border-radius: 8px;
+    font-weight: bold;
+    color: #2e7d32;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.peta-preview-empty {
+    height: 120px;
+    border-radius: 12px;
+    background: #f5f7f5;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    color: #9e9e9e;
 }
 
 /* BODY */
 .detail-body {
     padding: 16px;
     overflow-y: auto;
+    background: #fff;
+
+    /* radius bawah */
+    border-bottom-left-radius: 16px;
+    border-bottom-right-radius: 16px;
 }
 
 .detail-grid {
@@ -172,16 +266,21 @@
 }
 
 /* ===== MODE 1 FILE (BESAR) ===== */
-.detail-image-single {
-    margin-bottom: 16px;
+.detail-image-single,
+.detail-image-wrap {
+    border-radius: 16px;
+    overflow: hidden;   /* 🔑 PALING PENTING */
 }
 
-.detail-image-large {
+
+.detail-image-large,
+.detail-image-grid-img {
+    border-radius: 0;   /* 🔥 biar nurut parent */
     width: 100%;
-    max-height: 320px;
+    height: 100%;
     object-fit: cover;
-    border-radius: 12px;
 }
+
 
 /* ===== MODE GRID (BANYAK FILE) ===== */
 .detail-image-grid {
@@ -208,14 +307,15 @@
 .image-action-overlay {
     position: absolute;
     inset: 0;
+    background: rgba(0,0,0,0.45);
     display: flex;
     align-items: center;
     justify-content: center;
-    gap: 10px;
+    gap: 8px;
 
-    background: rgba(0,0,0,0.45);
     opacity: 0;
     transition: opacity .2s ease;
+    z-index: 2;
 }
 
 body:has(.detail-overlay:target) {
@@ -284,6 +384,7 @@ body:has(.detail-overlay:target) {
             rgba(0,0,0,0)
         );
     }
+
 }
 
 /* ===============================
@@ -292,14 +393,13 @@ body:has(.detail-overlay:target) {
 
 .card-image-wrapper {
     position: relative;
-    width: 100%;
-    height: 160px;
+    height: 160px; /* jangan terlalu tinggi */
     overflow: hidden;
-
-    /* nyatu sama card */
+    background: #e9ecef;
     border-top-left-radius: 12px;
     border-top-right-radius: 12px;
 }
+
 
 /* GAMBAR COVER */
 .card-image {

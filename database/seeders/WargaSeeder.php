@@ -16,9 +16,8 @@ class WargaSeeder extends Seeder
 
         for ($i = 0; $i < 50; $i++) {
             DB::table('warga')->insert([
-                'nama'          => $faker->name,
                 'no_ktp'        => $faker->unique()->numerify('################'), // 16 digit
-                'alamat'        => $faker->address,
+                'nama'          => $faker->name,
                 'jenis_kelamin' => $faker->randomElement($jenisKelamin),
                 'agama'         => $faker->randomElement($agamaList),
                 'pekerjaan'     => $faker->jobTitle,

@@ -32,15 +32,19 @@
                                     <div class="row">
                                         {{-- Kode Persil --}}
                                         <div class="col-md-6 mb-3">
-                                            <label class="form-label text-secondary fw-semibold">Kode Persil <span
-                                                    class="text-danger">*</span></label>
-                                            <input type="text" name="kode_persil"
-                                                class="form-control border-success-subtle @error('kode_persil') is-invalid @enderror"
-                                                value="{{ old('kode_persil') }}" required placeholder="Contoh: P001">
-                                            @error('kode_persil')
-                                                <div class="invalid-feedback">{{ $message }}</div>
-                                            @enderror
-                                        </div>
+    <label class="form-label text-secondary fw-semibold">
+        Kode Persil <span class="text-danger">*</span>
+    </label>
+
+    <input type="text"
+           class="form-control border-success-subtle bg-light"
+           value="{{ $kodePersil }}"
+           readonly>
+
+    {{-- kirim ke backend --}}
+    <input type="hidden" name="kode_persil" value="{{ $kodePersil }}">
+</div>
+
 
                                         {{-- Pemilik Warga ID --}}
                                         <div class="col-md-6 mb-3">
