@@ -3,6 +3,7 @@ namespace App\Http\Controllers;
 
 use App\Models\media;
 use App\Models\Persil;
+use App\Models\Penggunaan;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 
@@ -39,82 +40,73 @@ class PersilController extends Controller
      * Show the form for creating a new resource.
      */
     public function create()
-{
-    $lastPersil = Persil::orderBy('persil_id', 'desc')->first();
+    {
+        $lastPersil = Persil::orderBy('persil_id', 'desc')->first();
 
-    if ($lastPersil) {
-        $lastNumber = (int) substr($lastPersil->kode_persil, 1);
-        $nextNumber = $lastNumber + 1;
-    } else {
-        $nextNumber = 1;
+        if ($lastPersil) {
+            $lastNumber = (int) substr($lastPersil->kode_persil, 1);
+            $nextNumber = $lastNumber + 1;
+        } else {
+            $nextNumber = 1;
+        }
+
+        $kodePersil = 'P' . str_pad($nextNumber, 3, '0', STR_PAD_LEFT);
+        $penggunaanList = Penggunaan::orderBy('nama_penggunaan')->get();
+
+        return view('pages.persil.create', compact('kodePersil', 'penggunaanList'));
     }
-
-    $kodePersil = 'P' . str_pad($nextNumber, 3, '0', STR_PAD_LEFT);
-
-    return view('pages.persil.create', compact('kodePersil'));
-}
 
     /**
      * Store a newly created resource in storage.
      */
     public function store(Request $request)
-{
-    $request->validate([
-        'pemilik_warga_id' => 'required|exists:warga,warga_id',
-        'luas_m2'          => 'required|numeric',
-        'alamat_lahan'     => 'required',
-        'media.*'          => 'nullable|file|mimes:jpg,jpeg,png|max:5120',
-    ]);
+    {
+        $request->validate([
+            'pemilik_warga_id' => 'required|exists:warga,warga_id',
+            'luas_m2'          => 'required|numeric',
+            'penggunaan_id'    => 'required|exists:penggunaan,jenis_id', 
+            'alamat_lahan'     => 'required',
+            'media.*'          => 'nullable|file|mimes:jpg,jpeg,png|max:5120',
+        ]);
+        $lastPersil = Persil::orderBy('persil_id', 'desc')->first();
 
-    // ===============================
-    // AUTO GENERATE KODE PERSIL
-    // ===============================
-    $lastPersil = Persil::orderBy('persil_id', 'desc')->first();
-
-    if ($lastPersil && preg_match('/P(\d+)/', $lastPersil->kode_persil, $match)) {
-        $nextNumber = (int) $match[1] + 1;
-    } else {
-        $nextNumber = 1;
-    }
-
-    $kodePersil = 'P' . str_pad($nextNumber, 3, '0', STR_PAD_LEFT);
-
-    // ===============================
-    // SIMPAN PERSIL
-    // ===============================
-    $persil = Persil::create([
-        'kode_persil'      => $kodePersil,
-        'pemilik_warga_id' => $request->pemilik_warga_id,
-        'luas_m2'          => $request->luas_m2,
-        'penggunaan_id'    => $request->penggunaan_id,
-        'alamat_lahan'     => $request->alamat_lahan,
-        'rt'               => $request->rt,
-        'rw'               => $request->rw,
-    ]);
-
-    // ===============================
-    // SIMPAN MEDIA
-    // ===============================
-    if ($request->hasFile('media')) {
-        foreach ($request->file('media') as $file) {
-            if (! $file || ! $file->isValid()) continue;
-
-            $path = $file->store('media', 'public');
-
-            Media::create([
-                'ref_table' => 'persil',
-                'ref_id'    => $persil->persil_id,
-                'file_url'  => $path,
-                'mime_type' => $file->getClientMimeType(),
-            ]);
+        if ($lastPersil && preg_match('/P(\d+)/', $lastPersil->kode_persil, $match)) {
+            $nextNumber = (int) $match[1] + 1;
+        } else {
+            $nextNumber = 1;
         }
+
+        $kodePersil = 'P' . str_pad($nextNumber, 3, '0', STR_PAD_LEFT);
+        $persil     = Persil::create([
+            'kode_persil'      => $kodePersil,
+            'pemilik_warga_id' => $request->pemilik_warga_id,
+            'luas_m2'          => $request->luas_m2,
+            'penggunaan_id'    => $request->penggunaan_id,
+            'alamat_lahan'     => $request->alamat_lahan,
+            'rt'               => $request->rt,
+            'rw'               => $request->rw,
+        ]);
+        if ($request->hasFile('media')) {
+            foreach ($request->file('media') as $file) {
+                if (! $file || ! $file->isValid()) {
+                    continue;
+                }
+
+                $path = $file->store('media', 'public');
+
+                Media::create([
+                    'ref_table' => 'persil',
+                    'ref_id'    => $persil->persil_id,
+                    'file_url'  => $path,
+                    'mime_type' => $file->getClientMimeType(),
+                ]);
+            }
+        }
+
+        return redirect()
+            ->route('persil.index')
+            ->with('success', "Persil {$kodePersil} berhasil ditambahkan");
     }
-
-    return redirect()
-        ->route('persil.index')
-        ->with('success', "Persil {$kodePersil} berhasil ditambahkan");
-}
-
 
     /**
      * Display the specified resource.
@@ -131,12 +123,16 @@ class PersilController extends Controller
     public function edit(string $id)
     {
         $persil = Persil::findOrFail($id);
-        return view('pages.persil.edit', compact('persil'));
+
+        // ambil list penggunaan untuk dropdown
+        $penggunaanList = Penggunaan::orderBy('nama_penggunaan')->get();
+
+        return view('pages.persil.edit', compact('persil', 'penggunaanList'));
     }
 
-    /**
-     * Update the specified resource in storage.
-     */
+/**
+ * Update the specified resource in storage.
+ */
     public function update(Request $request, string $id)
     {
         $persil = Persil::findOrFail($id);
@@ -144,19 +140,19 @@ class PersilController extends Controller
         $request->validate([
             'pemilik_warga_id' => 'required',
             'luas_m2'          => 'required|numeric',
+            'penggunaan_id'    => 'required|exists:penggunaan,jenis_id', // <-- ini kunci
             'alamat_lahan'     => 'required',
             'media.*'          => 'nullable|file|max:5120',
         ]);
 
         $persil->update([
-    'pemilik_warga_id' => $request->pemilik_warga_id,
-    'luas_m2'          => $request->luas_m2,
-    'penggunaan_id'    => $request->penggunaan_id,
-    'alamat_lahan'     => $request->alamat_lahan,
-    'rt'               => $request->rt,
-    'rw'               => $request->rw,
-]);
-
+            'pemilik_warga_id' => $request->pemilik_warga_id,
+            'luas_m2'          => $request->luas_m2,
+            'penggunaan_id'    => $request->penggunaan_id, // <-- sekarang pasti ada
+            'alamat_lahan'     => $request->alamat_lahan,
+            'rt'               => $request->rt,
+            'rw'               => $request->rw,
+        ]);
 
         // Tambah file baru jika ada
         if ($request->hasFile('media')) {
@@ -166,6 +162,7 @@ class PersilController extends Controller
                 }
 
                 $path = $file->store('media', 'public');
+
                 Media::create([
                     'ref_table'  => 'persil',
                     'ref_id'     => $persil->persil_id,

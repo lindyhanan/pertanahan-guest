@@ -167,12 +167,6 @@
         </div>
 
         <div class="detail-body">
-            @if ($w->foto)
-                <div class="detail-image-single mb-3">
-                    <img src="{{ asset('storage/'.$w->foto) }}" class="detail-image-large">
-                </div>
-            @endif
-
             <div class="detail-grid">
                 <div><strong>ID</strong><div>{{ $w->warga_id }}</div></div>
                 <div><strong>Nama</strong><div>{{ $w->nama }}</div></div>

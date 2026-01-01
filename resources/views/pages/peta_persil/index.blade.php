@@ -185,8 +185,6 @@
 @foreach ($peta as $p)
 <div id="detail-peta-{{ $p->peta_id }}" class="detail-overlay">
     <div class="detail-box">
-
-        {{-- HEADER --}}
         <div class="detail-header">
             <h5>
                 Detail Peta Persil #
@@ -194,9 +192,7 @@
             </h5>
             <a href="#" class="close-btn">✕</a>
         </div>
-
         <div class="detail-body">
-
             @php
                 $images = $p->media->filter(fn($m) =>
                     \Illuminate\Support\Str::startsWith($m->mime_type, 'image')
@@ -207,9 +203,7 @@
             {{-- ================= TIDAK ADA FILE ================= --}}
             @if ($files->isEmpty())
                 <p class="text-muted small">Belum ada file.</p>
-
             @else
-
                 {{-- ================= GAMBAR ================= --}}
                 @if ($images->count() === 1)
                     @php $img = $images->first(); @endphp
@@ -352,7 +346,7 @@
             </p>
         </div>
     </div>
-    
+
 </div>
 @endforeach
 

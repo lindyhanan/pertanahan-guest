@@ -75,14 +75,24 @@
 
                                         {{-- Penggunaan --}}
                                         <div class="col-md-6 mb-3">
-                                            <label class="form-label text-secondary fw-semibold">Jenis Penggunaan</label>
-                                            <input type="text" name="penggunaan"
-                                                class="form-control border-success-subtle @error('penggunaan') is-invalid @enderror"
-                                                value="{{ old('penggunaan') }}" placeholder="Contoh: Permukiman/Sawah">
-                                            @error('penggunaan')
-                                                <div class="invalid-feedback">{{ $message }}</div>
-                                            @enderror
-                                        </div>
+    <label class="form-label text-secondary fw-semibold">Jenis Penggunaan</label>
+    <select name="penggunaan_id"
+            class="form-select border-success-subtle @error('penggunaan_id') is-invalid @enderror"
+            required>
+        <option value="">-- Pilih Jenis Penggunaan --</option>
+        @foreach ($penggunaanList as $p)
+            <option value="{{ $p->jenis_id }}"
+                {{ old('penggunaan_id') == $p->jenis_id ? 'selected' : '' }}>
+                {{ $p->nama_penggunaan }}
+            </option>
+        @endforeach
+    </select>
+
+    @error('penggunaan_id')
+        <div class="invalid-feedback">{{ $message }}</div>
+    @enderror
+</div>
+
                                     </div>
 
                                     {{-- Alamat Lahan --}}

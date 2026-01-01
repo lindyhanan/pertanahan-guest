@@ -6,24 +6,19 @@ use Illuminate\Http\Request;
 
 class PenggunaanController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
     public function index(Request $request)
     {
-        $search = $request->query('search'); // keyword search
+        $search = $request->query('search');
         $query  = Penggunaan::query();
 
-        // Filter dan search
         if ($search) {
             $query->where('nama_penggunaan', 'like', "%{$search}%")
                 ->orWhere('keterangan', 'like', "%{$search}%");
         }
 
-        // Urutkan dan paginasi
         $data_penggunaan = $query->orderBy('created_at', 'desc')
-            ->paginate(9)        // 6 item per halaman
-            ->withQueryString(); // supaya search tetap ada saat pagination
+            ->paginate(9)
+            ->withQueryString();
 
         return view('pages.penggunaan.index', compact('data_penggunaan', 'search'));
     }
@@ -42,20 +37,20 @@ class PenggunaanController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-        'nama_penggunaan' => 'required|string|max:50|unique:penggunaan,nama_penggunaan',
-        'keterangan'      => 'required|string|max:200',
-    ]);
-    $lastId = Penggunaan::max('jenis_id');
-    $nextId = $lastId ? $lastId + 1 : 1;
+            'nama_penggunaan' => 'required|string|max:50|unique:penggunaan,nama_penggunaan',
+            'keterangan'      => 'required|string|max:200',
+        ]);
+        $lastId = Penggunaan::max('jenis_id');
+        $nextId = $lastId ? $lastId + 1 : 1;
 
-    Penggunaan::create([
-        'nama_penggunaan' => $request->nama_penggunaan,
-        'keterangan'      => $request->keterangan,
-    ]);
+        Penggunaan::create([
+            'nama_penggunaan' => $request->nama_penggunaan,
+            'keterangan'      => $request->keterangan,
+        ]);
 
-    return redirect()
-        ->route('penggunaan.index')
-        ->with('success', 'Data penggunaan berhasil ditambahkan!');
+        return redirect()
+            ->route('penggunaan.index')
+            ->with('success', 'Data penggunaan berhasil ditambahkan!');
     }
 
     /**
@@ -66,33 +61,27 @@ class PenggunaanController extends Controller
         //
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     */
     public function edit(string $id)
     {
         $penggunaan = Penggunaan::findOrFail($id);
-    return view('pages.penggunaan.edit', compact('penggunaan'));
+        return view('pages.penggunaan.edit', compact('penggunaan'));
     }
 
-    /**
-     * Update the specified resource in storage.
-     */
     public function update(Request $request, string $id)
-{
-    $penggunaan = Penggunaan::findOrFail($id);
+    {
+        $penggunaan = Penggunaan::findOrFail($id);
 
-    $request->validate([
-        'nama_penggunaan' => 'required|string|max:50',
-        'keterangan'      => 'required|string|max:200',
-    ]);
+        $request->validate([
+            'nama_penggunaan' => 'required|string|max:50',
+            'keterangan'      => 'required|string|max:200',
+        ]);
 
-    $penggunaan->update($request->only('nama_penggunaan', 'keterangan'));
+        $penggunaan->update($request->only('nama_penggunaan', 'keterangan'));
 
-    return redirect()
-        ->route('penggunaan.index')
-        ->with('success', 'Data berhasil diperbarui.');
-}
+        return redirect()
+            ->route('penggunaan.index')
+            ->with('success', 'Data berhasil diperbarui.');
+    }
 
     /**
      * Remove the specified resource from storage.

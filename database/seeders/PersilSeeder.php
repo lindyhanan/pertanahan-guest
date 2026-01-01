@@ -1,5 +1,4 @@
 <?php
-
 namespace Database\Seeders;
 
 use Faker\Factory as Faker;
@@ -12,7 +11,7 @@ class PersilSeeder extends Seeder
     {
         $faker = Faker::create('id_ID');
 
-        $wargaIds = DB::table('warga')->pluck('warga_id')->toArray();
+        $wargaIds      = DB::table('warga')->pluck('warga_id')->toArray();
         $penggunaanIds = DB::table('penggunaan')->pluck('jenis_id')->toArray();
 
         if (empty($wargaIds)) {
@@ -27,16 +26,16 @@ class PersilSeeder extends Seeder
 
         for ($i = 1; $i <= 100; $i++) {
             DB::table('persil')->insert([
-    'kode_persil'      => 'P' . str_pad($i, 3, '0', STR_PAD_LEFT),
-    'pemilik_warga_id' => $faker->randomElement($wargaIds),
-    'penggunaan_id'    => $faker->randomElement($penggunaanIds), // ✅ FIX
-    'luas_m2'          => $faker->randomFloat(2, 100, 5000),
-    'alamat_lahan'     => $faker->streetAddress,
-    'rt'               => str_pad($faker->numberBetween(1, 20), 3, '0', STR_PAD_LEFT),
-    'rw'               => str_pad($faker->numberBetween(1, 10), 3, '0', STR_PAD_LEFT),
-    'created_at'       => now(),
-    'updated_at'       => now(),
-]);
+                'kode_persil'      => 'P' . str_pad($i, 3, '0', STR_PAD_LEFT),
+                'pemilik_warga_id' => $faker->randomElement($wargaIds),
+                'penggunaan_id'    => $faker->randomElement($penggunaanIds), // ✅ FIX
+                'luas_m2'          => $faker->randomFloat(2, 100, 5000),
+                'alamat_lahan'     => $faker->streetAddress,
+                'rt'               => str_pad($faker->numberBetween(1, 20), 3, '0', STR_PAD_LEFT),
+                'rw'               => str_pad($faker->numberBetween(1, 10), 3, '0', STR_PAD_LEFT),
+                'created_at'       => now(),
+                'updated_at'       => now(),
+            ]);
 
         }
 

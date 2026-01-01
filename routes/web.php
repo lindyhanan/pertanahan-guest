@@ -21,8 +21,7 @@ Route::get('/about', [AboutController::class, 'index'])->name('about');
 
 Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 // halaman dashboard (setelah login)
-Route::get('/penggunaan/edit', [PenggunaanController::class, 'edit'])->name('penggunaan.edit');
-Route::post('/penggunaan/edit', [PenggunaanController::class, 'update'])->name('penggunaan.update');
+
 
 // Route::get('/', function () {
 //     return view('pages.guest.dashboard');
@@ -32,7 +31,11 @@ Route::get('/', [DashboardController::class, 'index'])
     ->name('dashboard.index')
     ->middleware('checkislogin');
 
-Route::get('/pertanahan', [PertanahanController::class, 'index']);
+Route::post('/penggunaan/edit', function () {
+    dd(request()->all(), url()->previous());
+});
+
+
 
 Route::resource('persil', PersilController::class);
 Route::delete(

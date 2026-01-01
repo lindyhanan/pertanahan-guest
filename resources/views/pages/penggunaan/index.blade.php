@@ -94,12 +94,12 @@
                             <i data-feather="eye" width="14"></i> Detail
                         </a>
 
-                        <a href="{{ route('penggunaan.edit', $item->jenis_id) }}"
+                        <a href="{{ route('penggunaan.edit', $item) }}"
                            class="btn btn-sm btn-warning rounded-pill px-3">
                             <i data-feather="edit" width="14"></i> Edit
                         </a>
 
-                        <form action="{{ route('penggunaan.destroy', $item->jenis_id) }}"
+                        <form action="{{ route('penggunaan.destroy', $item) }}"
                               method="POST"
                               onsubmit="return confirm('Hapus data ini?')">
                             @csrf
@@ -139,13 +139,11 @@
 
         {{-- BODY --}}
         <div class="detail-body">
-
             <div class="detail-grid">
                 <div>
                     <strong>Nama Penggunaan</strong>
                     <div>{{ $item->nama_penggunaan }}</div>
                 </div>
-
                 <div>
                     <strong>ID</strong>
                     <div>{{ $item->jenis_id }}</div>
@@ -155,18 +153,7 @@
                     <strong>Keterangan</strong>
                     <div>{{ $item->keterangan ?? '-' }}</div>
                 </div>
-
-                <div>
-                    <strong>Dibuat</strong>
-                    <div>{{ $item->created_at->format('d M Y') }}</div>
-                </div>
-
-                <div>
-                    <strong>Update</strong>
-                    <div>{{ $item->updated_at->format('d M Y') }}</div>
-                </div>
             </div>
-
         </div>
     </div>
 </div>

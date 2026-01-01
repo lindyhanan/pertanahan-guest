@@ -1,5 +1,4 @@
 <?php
-
 namespace App\Http\Controllers;
 
 use App\Models\Warga;
@@ -12,30 +11,29 @@ class WargaController extends Controller
      * Display a listing of the resource.
      */
     public function index(Request $request)
-{
-    $search = $request->query('search');
-    $jenis_kelamin = $request->query('jenis_kelamin');
+    {
+        $search        = $request->query('search');
+        $jenis_kelamin = $request->query('jenis_kelamin');
 
-    $warga = Warga::query()
-        ->when($search, function ($query, $search) {
-            $query->where(function ($q) use ($search) {
-                $q->where('nama', 'like', "%{$search}%")
-                  ->orWhere('no_ktp', 'like', "%{$search}%");
-            });
-        })
-        ->when($jenis_kelamin, function ($query, $jenis_kelamin) {
-            $query->where('jenis_kelamin', $jenis_kelamin);
-        })
-        ->orderBy('nama')
-        ->paginate(9)
-        ->withQueryString();
+        $warga = Warga::query()
+            ->when($search, function ($query, $search) {
+                $query->where(function ($q) use ($search) {
+                    $q->where('nama', 'like', "%{$search}%")
+                        ->orWhere('no_ktp', 'like', "%{$search}%");
+                });
+            })
+            ->when($jenis_kelamin, function ($query, $jenis_kelamin) {
+                $query->where('jenis_kelamin', $jenis_kelamin);
+            })
+            ->orderBy('nama')
+            ->paginate(9)
+            ->withQueryString();
 
-    return view(
-        'pages.warga.index',
-        compact('warga', 'search', 'jenis_kelamin')
-    );
-}
-
+        return view(
+            'pages.warga.index',
+            compact('warga', 'search', 'jenis_kelamin')
+        );
+    }
 
     /**
      * Show the form for creating a new resource.
@@ -44,9 +42,9 @@ class WargaController extends Controller
     {
 
         $lastId = Warga::max('warga_id');
-    $nextId = $lastId ? $lastId + 1 : 1;
+        $nextId = $lastId ? $lastId + 1 : 1;
 
-    return view('pages.warga.create', compact('nextId'));
+        return view('pages.warga.create', compact('nextId'));
     }
 
     /**
@@ -57,6 +55,7 @@ class WargaController extends Controller
         $validated = $request->validate([
             'nama'          => 'required|string|max:255',
             'no_ktp'        => 'required|string|max:20',
+
             'jenis_kelamin' => 'required|string',
             'agama'         => 'nullable|string',
             'pekerjaan'     => 'nullable|string',
