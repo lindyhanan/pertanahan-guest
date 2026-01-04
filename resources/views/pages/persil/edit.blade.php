@@ -75,7 +75,7 @@
                                         {{-- Penggunaan --}}
                                         <div class="col-md-6 mb-3">
   <label class="form-label text-secondary fw-semibold">Jenis Penggunaan</label>
-  <select name="jenis_id"
+  <select name="penggunaan_id"
           class="form-select border-success-subtle @error('jenis_id') is-invalid @enderror"
           required>
       <option value="">-- Pilih Jenis Penggunaan --</option>
