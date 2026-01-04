@@ -36,6 +36,9 @@ Route::post('/penggunaan/edit', function () {
 });
 
 
+Route::get('/register', [UserController::class, 'registerForm'])->name('register');
+Route::post('/register', [UserController::class, 'registerStore'])->name('register.post');
+
 
 Route::resource('persil', PersilController::class);
 Route::delete(

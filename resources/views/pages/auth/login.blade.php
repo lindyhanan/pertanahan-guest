@@ -73,7 +73,7 @@
                 </button>
 
                 <div class="text-center mt-3">
-                    <a href="{{ route('user.create') }}" class="text-dark">
+                    <a href="{{ route('register') }}" class="text-dark">
                         Buat Akun
                     </a>
                 </div>

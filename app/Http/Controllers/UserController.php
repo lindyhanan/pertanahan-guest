@@ -142,5 +142,35 @@ class UserController extends Controller
             ->with('success', 'Foto profile berhasil dihapus.');
 
     }
+    public function registerForm()
+{
+    // view register yang baru (glass auth)
+    return view('pages.auth.register');
+}
+
+public function registerStore(Request $request)
+{
+    $allowedRoles = ['klien', 'staff'];
+
+    $request->validate([
+        'name'     => 'required|string|max:100',
+        'email'    => 'required|email|unique:users,email',
+        'role'     => 'required|in:' . implode(',', $allowedRoles),
+        'password' => 'required|min:6|confirmed',
+    ]);
+
+    User::create([
+        'name'     => $request->name,
+        'email'    => $request->email,
+        'role'     => $request->role, // aman karena sudah difilter
+        'password' => Hash::make($request->password),
+    ]);
+
+    return redirect()
+        ->route('login')
+        ->with('success', 'Akun berhasil dibuat, silakan login.');
+}
+
+
 
 }
