@@ -26,7 +26,18 @@
 
                             {{-- Card Body (Formulir) --}}
                             <div class="card-body">
+                                @if ($errors->any())
+  <div class="alert alert-danger">
+    <ul class="mb-0 ps-3">
+      @foreach ($errors->all() as $e)
+        <li>{{ $e }}</li>
+      @endforeach
+    </ul>
+  </div>
+@endif
+
                                 <form action="{{ route('persil.store') }}" method="POST" enctype="multipart/form-data">
+
                                     @csrf
 
                                     <div class="row">
@@ -74,25 +85,26 @@
                                         </div>
 
                                         {{-- Penggunaan --}}
-                                        <div class="col-md-6 mb-3">
-    <label class="form-label text-secondary fw-semibold">Jenis Penggunaan</label>
-    <select name="penggunaan_id"
-            class="form-select border-success-subtle @error('penggunaan_id') is-invalid @enderror"
-            required>
-        <option value="">-- Pilih Jenis Penggunaan --</option>
-        @foreach ($penggunaanList as $p)
-            <option value="{{ $p->jenis_id }}"
-                {{ old('penggunaan_id') == $p->jenis_id ? 'selected' : '' }}>
-                {{ $p->nama_penggunaan }}
-            </option>
-        @endforeach
-    </select>
+                                        <div class="col-md-6 mb-3-3">
+                                        <label class="form-label text-secondary fw-semibold">Jenis Penggunaan</label>
+<select name="penggunaan_id"
+        class="form-select border-success-subtle @error('penggunaan_id') is-invalid @enderror"
+        required>
+    <option value="">-- Pilih Jenis Penggunaan --</option>
+    @foreach ($penggunaanList as $p)
+        <option value="{{ $p->jenis_id }}"
+            {{ old('penggunaan_id') == $p->jenis_id ? 'selected' : '' }}>
+            {{ $p->nama_penggunaan }}
+        </option>
+    @endforeach
+</select>
 
-    @error('penggunaan_id')
-        <div class="invalid-feedback">{{ $message }}</div>
-    @enderror
-</div>
+@error('penggunaan_id')
+    <div class="invalid-feedback">{{ $message }}</div>
+@enderror
 
+
+                                    </div>
                                     </div>
 
                                     {{-- Alamat Lahan --}}
@@ -164,6 +176,7 @@
             </div>
         </section>
     </div>
+    
 
     {{-- PASTIKAN SCRIPT INI ADA UNTUK ICON FEATHER --}}
     <script>

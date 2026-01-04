@@ -75,19 +75,19 @@
                                         {{-- Penggunaan --}}
                                         <div class="col-md-6 mb-3">
   <label class="form-label text-secondary fw-semibold">Jenis Penggunaan</label>
-  <select name="penggunaan_id"
-          class="form-select border-success-subtle @error('penggunaan_id') is-invalid @enderror"
+  <select name="jenis_id"
+          class="form-select border-success-subtle @error('jenis_id') is-invalid @enderror"
           required>
       <option value="">-- Pilih Jenis Penggunaan --</option>
       @foreach ($penggunaanList as $p)
           <option value="{{ $p->jenis_id }}"
-              {{ old('penggunaan_id', $persil->penggunaan_id) == $p->jenis_id ? 'selected' : '' }}>
+              {{ old('jenis_id', $persil->penggunaan_id) == $p->jenis_id ? 'selected' : '' }}>
               {{ $p->nama_penggunaan }}
           </option>
       @endforeach
   </select>
 
-  @error('penggunaan_id')
+  @error('jenis_id')
       <div class="invalid-feedback">{{ $message }}</div>
   @enderror
 </div>

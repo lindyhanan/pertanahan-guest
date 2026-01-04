@@ -60,32 +60,36 @@ class PersilController extends Controller
      * Store a newly created resource in storage.
      */
     public function store(Request $request)
-    {
-        $request->validate([
-            'pemilik_warga_id' => 'required|exists:warga,warga_id',
-            'luas_m2'          => 'required|numeric',
-            'penggunaan_id'    => 'required|exists:penggunaan,jenis_id', 
-            'alamat_lahan'     => 'required',
-            'media.*'          => 'nullable|file|mimes:jpg,jpeg,png|max:5120',
-        ]);
-        $lastPersil = Persil::orderBy('persil_id', 'desc')->first();
+{
+    //  dd('MASUK STORE', $request->all());
+    $request->validate([
+    'pemilik_warga_id' => 'required|exists:warga,warga_id',
+    'luas_m2'          => 'required|numeric',
+    'penggunaan_id'    => 'required|exists:penggunaan,jenis_id',
+    'alamat_lahan'     => 'required',
+        'rt'               => 'nullable',
+        'rw'               => 'nullable',
+        'media.*'          => 'nullable|file|mimes:jpg,jpeg,png,pdf|max:5120',
+    ]);
 
-        if ($lastPersil && preg_match('/P(\d+)/', $lastPersil->kode_persil, $match)) {
-            $nextNumber = (int) $match[1] + 1;
-        } else {
-            $nextNumber = 1;
-        }
+    $lastPersil = Persil::orderBy('persil_id', 'desc')->first();
+    if ($lastPersil && preg_match('/P(\d+)/', $lastPersil->kode_persil, $match)) {
+        $nextNumber = (int) $match[1] + 1;
+    } else {
+        $nextNumber = 1;
+    }
+    $kodePersil = 'P' . str_pad($nextNumber, 3, '0', STR_PAD_LEFT);
 
-        $kodePersil = 'P' . str_pad($nextNumber, 3, '0', STR_PAD_LEFT);
-        $persil     = Persil::create([
-            'kode_persil'      => $kodePersil,
-            'pemilik_warga_id' => $request->pemilik_warga_id,
-            'luas_m2'          => $request->luas_m2,
-            'penggunaan_id'    => $request->penggunaan_id,
-            'alamat_lahan'     => $request->alamat_lahan,
-            'rt'               => $request->rt,
-            'rw'               => $request->rw,
-        ]);
+    Persil::create([
+    'kode_persil'      => $kodePersil,
+    'pemilik_warga_id' => $request->pemilik_warga_id,
+    'luas_m2'          => $request->luas_m2,
+    'penggunaan_id'    => $request->penggunaan_id, // INI WAJIB
+    'alamat_lahan'     => $request->alamat_lahan,
+    'rt'               => $request->rt,
+    'rw'               => $request->rw,
+]);
+
         if ($request->hasFile('media')) {
             foreach ($request->file('media') as $file) {
                 if (! $file || ! $file->isValid()) {
@@ -134,25 +138,27 @@ class PersilController extends Controller
  * Update the specified resource in storage.
  */
     public function update(Request $request, string $id)
-    {
-        $persil = Persil::findOrFail($id);
+{
+    $persil = Persil::findOrFail($id);
 
-        $request->validate([
-            'pemilik_warga_id' => 'required',
-            'luas_m2'          => 'required|numeric',
-            'penggunaan_id'    => 'required|exists:penggunaan,jenis_id', // <-- ini kunci
-            'alamat_lahan'     => 'required',
-            'media.*'          => 'nullable|file|max:5120',
-        ]);
+    $request->validate([
+        'pemilik_warga_id' => 'required|exists:warga,warga_id',
+        'luas_m2'          => 'required|numeric',
+        'jenis_id'         => 'required|exists:penggunaan,jenis_id', // ✅ FIX: sesuai form
+        'alamat_lahan'     => 'required',
+        'rt'               => 'nullable',
+        'rw'               => 'nullable',
+        'media.*'          => 'nullable|file|mimes:jpg,jpeg,png,pdf|max:5120',
+    ]);
 
-        $persil->update([
-            'pemilik_warga_id' => $request->pemilik_warga_id,
-            'luas_m2'          => $request->luas_m2,
-            'penggunaan_id'    => $request->penggunaan_id, // <-- sekarang pasti ada
-            'alamat_lahan'     => $request->alamat_lahan,
-            'rt'               => $request->rt,
-            'rw'               => $request->rw,
-        ]);
+    $persil->update([
+        'pemilik_warga_id' => $request->pemilik_warga_id,
+        'luas_m2'          => $request->luas_m2,
+        'penggunaan_id'    => $request->jenis_id, // ✅ mapping ke kolom DB
+        'alamat_lahan'     => $request->alamat_lahan,
+        'rt'               => $request->rt,
+        'rw'               => $request->rw,
+    ]);
 
         // Tambah file baru jika ada
         if ($request->hasFile('media')) {
