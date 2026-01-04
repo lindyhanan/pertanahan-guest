@@ -40,21 +40,20 @@ class PersilController extends Controller
      * Show the form for creating a new resource.
      */
     public function create()
-    {
-        $lastPersil = Persil::orderBy('persil_id', 'desc')->first();
+{
+    // Ambil nomor terbesar dari kode_persil (misal P001 -> 1, P120 -> 120)
+    $maxNo = Persil::selectRaw("MAX(CAST(SUBSTRING(kode_persil, 2) AS UNSIGNED)) as max_no")
+        ->value('max_no');
 
-        if ($lastPersil) {
-            $lastNumber = (int) substr($lastPersil->kode_persil, 1);
-            $nextNumber = $lastNumber + 1;
-        } else {
-            $nextNumber = 1;
-        }
+    $nextNumber = ($maxNo ?? 0) + 1;
 
-        $kodePersil = 'P' . str_pad($nextNumber, 3, '0', STR_PAD_LEFT);
-        $penggunaanList = Penggunaan::orderBy('nama_penggunaan')->get();
+    $kodePersil = 'P' . str_pad($nextNumber, 3, '0', STR_PAD_LEFT);
 
-        return view('pages.persil.create', compact('kodePersil', 'penggunaanList'));
-    }
+    $penggunaanList = Penggunaan::orderBy('nama_penggunaan')->get();
+
+    return view('pages.persil.create', compact('kodePersil', 'penggunaanList'));
+}
+
 
     /**
      * Store a newly created resource in storage.
@@ -63,6 +62,7 @@ class PersilController extends Controller
 {
     //  dd('MASUK STORE', $request->all());
     $request->validate([
+       'kode_persil' => 'required|unique:persil,kode_persil', 
     'pemilik_warga_id' => 'required|exists:warga,warga_id',
     'luas_m2'          => 'required|numeric',
     'penggunaan_id'    => 'required|exists:penggunaan,jenis_id',
