@@ -21,7 +21,8 @@ class DatabaseSeeder extends Seeder
             ]
         );
 
-        // ===============================
+        // =========
+        // ======================
         // USER DUMMY (RANGE + ROLE)
         // ===============================
         foreach (range(1, 150) as $i) {

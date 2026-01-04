@@ -1,4 +1,17 @@
 @extends('layouts.guest.app')
+@php
+    use App\Models\Persil;
+    use App\Models\Warga;
+    use App\Models\Penggunaan;
+    use App\Models\SengketaPersil;
+    use App\Models\DokumenPersil;
+
+    $totalPersil     = Persil::count();
+    $totalWarga      = Warga::count();
+    $totalPenggunaan = Penggunaan::count();
+    $totalSengketa   = SengketaPersil::count();
+    $totalDokumen    = DokumenPersil::count();
+@endphp
 
 @section('content')
 <section class="hero position-relative"
@@ -290,7 +303,7 @@
                 bottom: 20px;
                 right: 20px;
                 z-index: 1000;
-                background-color: #25D366; /* Warna WhatsApp */
+                background-color: #25D366; 
                 width: 60px;
                 height: 60px;
                 display: flex; /* Untuk memposisikan ikon di tengah */

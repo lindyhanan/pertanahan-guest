@@ -1,7 +1,7 @@
 <?php
 namespace App\Http\Controllers;
 
-use App\Models\media;
+use App\Models\Media;
 use App\Models\Persil;
 use App\Models\Penggunaan;
 use Illuminate\Http\Request;
