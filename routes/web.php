@@ -28,6 +28,9 @@ Route::post('/penggunaan/edit', [PenggunaanController::class, 'update'])->name('
 //     return view('pages.guest.dashboard');
 // }); // ->name('dashboard')
 
+Route::get('/register', [UserController::class, 'registerForm'])->name('register');
+Route::post('/register', [UserController::class, 'registerStore'])->name('register.post');
+
 Route::get('/', [DashboardController::class, 'index'])
     ->name('dashboard.index')
     ->middleware('checkislogin');
