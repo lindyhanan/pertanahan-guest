@@ -14,7 +14,7 @@ class Persil extends Model
         'kode_persil',
         'pemilik_warga_id',
         'luas_m2',
-        'penggunaan_id', // ganti dari 'penggunaan'
+        'penggunaan', // ganti dari 'penggunaan'
         'alamat_lahan',
         'rt',
         'rw',

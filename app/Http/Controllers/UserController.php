@@ -89,6 +89,9 @@ class UserController extends Controller
             'role'  => $request->role,
         ];
 
+        /* ===============================
+       HANDLE FOTO PROFILE
+       =============================== */
         if ($request->hasFile('foto')) {
 
             // hapus foto lama (jika ada)
@@ -99,6 +102,10 @@ class UserController extends Controller
             // simpan foto baru
             $data['foto'] = $request->file('foto')->store('users', 'public');
         }
+
+        /* ===============================
+       HANDLE PASSWORD
+       =============================== */
         if ($request->filled('password')) {
             $data['password'] = Hash::make($request->password);
         }

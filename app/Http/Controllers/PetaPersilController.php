@@ -2,73 +2,75 @@
 namespace App\Http\Controllers;
 
 use App\Models\Media;
-use App\Models\Persil;
 use App\Models\PetaPersil;
+use App\Models\Persil;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 
 class PetaPersilController extends Controller
 {
 
-    public function index(Request $request)
-    {
-        $search = $request->search;
+public function index(Request $request)
+{
+    $search = $request->search;
 
-        $peta = PetaPersil::with(['media', 'persil'])
-            ->when($search, function ($query) use ($search) {
-                $query->whereHas('persil', function ($q) use ($search) {
-                    $q->where('kode_persil', 'like', "%{$search}%");
-                })
-                    ->orWhere('peta_id', 'like', "%{$search}%");
+    $peta = PetaPersil::with(['media', 'persil'])
+        ->when($search, function ($query) use ($search) {
+            $query->whereHas('persil', function ($q) use ($search) {
+                $q->where('kode_persil', 'like', "%{$search}%");
             })
-            ->latest()
-            ->paginate(9)
-            ->withQueryString(); // ⬅️ PENTING BIAR SEARCH TIDAK HILANG SAAT PAGINATION
+            ->orWhere('peta_id', 'like', "%{$search}%");
+        })
+        ->latest()
+        ->paginate(9)
+        ->withQueryString(); // ⬅️ PENTING BIAR SEARCH TIDAK HILANG SAAT PAGINATION
 
-        return view('pages.peta_persil.index', compact('peta'));
-    }
+    return view('pages.peta_persil.index', compact('peta'));
+}
+
 
     public function create()
     {
-        $persils = Persil::orderBy('kode_persil')->get();
+$persils = Persil::orderBy('kode_persil')->get();
 
-        return view('pages.peta_persil.create', compact('persils'));
+    return view('pages.peta_persil.create', compact('persils'));
     }
 
     public function store(Request $request)
-    {
-        $request->validate([
-            'persil_id'      => 'required|exists:persil,persil_id',
-            'geojson'        => 'nullable|string',
-            'panjang_m'      => 'nullable|numeric',
-            'lebar_m'        => 'nullable|numeric',
-            'dokumen_file.*' => 'nullable|file|mimes:jpg,jpeg,png,pdf|max:5120',
-        ]);
+{
+    $request->validate([
+        'persil_id'      => 'required|exists:persil,persil_id',
+        'geojson'        => 'nullable|string',
+        'panjang_m'      => 'nullable|numeric',
+        'lebar_m'        => 'nullable|numeric',
+        'dokumen_file.*' => 'nullable|file|mimes:jpg,jpeg,png,pdf|max:5120',
+    ]);
 
-        $peta = PetaPersil::create([
-            'persil_id' => $request->persil_id,
-            'geojson'   => $request->geojson,
-            'panjang_m' => $request->panjang_m,
-            'lebar_m'   => $request->lebar_m,
-        ]);
+    $peta = PetaPersil::create([
+        'persil_id' => $request->persil_id,
+        'geojson'   => $request->geojson,
+        'panjang_m' => $request->panjang_m,
+        'lebar_m'   => $request->lebar_m,
+    ]);
 
-        if ($request->hasFile('dokumen_file')) {
-            foreach ($request->file('dokumen_file') as $file) {
-                $path = $file->store('peta_persil', 'public');
+    if ($request->hasFile('dokumen_file')) {
+        foreach ($request->file('dokumen_file') as $file) {
+            $path = $file->store('peta_persil', 'public');
 
-                Media::create([
-                    'ref_table' => 'peta_persil',
-                    'ref_id'    => $peta->peta_id,
-                    'file_url'  => $path,
-                    'mime_type' => $file->getClientMimeType(),
-                ]);
-            }
+            Media::create([
+                'ref_table' => 'peta_persil',
+                'ref_id'    => $peta->peta_id,
+                'file_url'  => $path,
+                'mime_type' => $file->getClientMimeType(),
+            ]);
         }
-
-        return redirect()
-            ->route('peta_persil.index')
-            ->with('success', 'Peta persil berhasil disimpan.');
     }
+
+    return redirect()
+        ->route('peta_persil.index')
+        ->with('success', 'Peta persil berhasil disimpan.');
+}
+
 
     public function update(Request $request, $id)
     {
@@ -88,6 +90,7 @@ class PetaPersilController extends Controller
         if ($request->hasFile('dokumen_file')) {
             foreach ($request->file('dokumen_file') as $file) {
                 $path = $file->store('media', 'public');
+
                 Media::create([
                     'ref_table' => 'peta_persil',
                     'ref_id'    => $peta->peta_id, // 🔑 WAJIB
@@ -96,15 +99,16 @@ class PetaPersilController extends Controller
                 ]);
             }
         }
+
         return redirect()->route('peta_persil.index')
             ->with('success', 'Peta berhasil diupdate');
     }
     public function edit($id)
     {
-        $p       = PetaPersil::findOrFail($id);
-        $persils = Persil::orderBy('kode_persil')->get();
+        $p = PetaPersil::findOrFail($id);
+    $persils = Persil::orderBy('kode_persil')->get();
 
-        return view('pages.peta_persil.edit', compact('p', 'persils'));
+    return view('pages.peta_persil.edit', compact('p', 'persils'));
     }
 
     public function destroy($id)

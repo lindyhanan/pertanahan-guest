@@ -151,12 +151,17 @@
 @foreach ($users as $user)
 <div id="detail-user-{{ $user->id }}" class="detail-overlay">
     <div class="detail-box">
+
+        {{-- HEADER --}}
         <div class="detail-header">
             <h5>Detail User</h5>
             <a href="#" class="close-btn">✕</a>
         </div>
 
+        {{-- BODY --}}
         <div class="detail-body">
+
+            {{-- FOTO --}}
             <div class="text-center mb-4">
                 @if ($user->foto)
                     <img src="{{ asset('storage/'.$user->foto) }}"

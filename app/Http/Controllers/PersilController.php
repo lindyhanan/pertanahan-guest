@@ -12,32 +12,32 @@ use Illuminate\Support\Facades\Storage;
 class PersilController extends Controller
 {
     public function index(Request $request)
-{
-    $search  = $request->query('search');
-    $pemilik = $request->query('pemilik');
-    $alamat  = $request->query('alamat');
+    {
+        $search  = $request->query('search');
+        $pemilik = $request->query('pemilik');
+        $alamat  = $request->query('alamat');
 
-    $persil = Persil::query()
-        ->when($search, function ($query, $search) {
-            $query->where('kode_persil', 'like', "%{$search}%")
-                ->orWhere('alamat_lahan', 'like', "%{$search}%");
-        })
-        ->when($pemilik, function ($query, $pemilik) {
-            $query->where('pemilik_warga_id', $pemilik);
-        })
-        ->when($alamat, function ($query, $alamat) {
-            $query->where('alamat_lahan', 'like', "%{$alamat}%");
-        })
-        ->orderBy('kode_persil')
-        ->paginate(9)
-        ->withQueryString();
+        $persil = Persil::query()
+            ->when($search, function ($query, $search) {
+                $query->where('kode_persil', 'like', "%{$search}%")
+                    ->orWhere('alamat_lahan', 'like', "%{$search}%");
+            })
+            ->when($pemilik, function ($query, $pemilik) {
+                $query->where('pemilik_warga_id', $pemilik);
+            })
+            ->when($alamat, function ($query, $alamat) {
+                $query->where('alamat_lahan', 'like', "%{$alamat}%");
+            })
+            ->orderBy('kode_persil')
+            ->paginate(9)
+            ->withQueryString();
 
-    return view('pages.persil.index', compact('persil', 'search', 'pemilik', 'alamat'));
-}
+        return view('pages.persil.index', compact('persil', 'search', 'pemilik', 'alamat'));
+    }
 
     public function create()
     {
-        // untuk tampilan saja (perkiraan). Kode final dibuat di store()
+        // perkiraan untuk tampilan
         $maxNo = Persil::selectRaw("MAX(CAST(SUBSTRING(kode_persil, 2) AS UNSIGNED)) as max_no")
             ->value('max_no');
 
@@ -62,13 +62,11 @@ class PersilController extends Controller
         ]);
 
         $persil = DB::transaction(function () use ($request) {
-            // ambil nomor terbesar dari kode_persil
             $maxNo = Persil::selectRaw("MAX(CAST(SUBSTRING(kode_persil, 2) AS UNSIGNED)) as max_no")
                 ->value('max_no');
 
             $nextNumber = ($maxNo ?? 0) + 1;
 
-            // retry kalau kebetulan tabrakan (misal submit barengan)
             for ($i = 0; $i < 20; $i++) {
                 $kodePersil = 'P' . str_pad($nextNumber + $i, 3, '0', STR_PAD_LEFT);
 
@@ -83,9 +81,8 @@ class PersilController extends Controller
                         'rw'               => $request->rw,
                     ]);
                 } catch (\Illuminate\Database\QueryException $e) {
-                    // MySQL duplicate key = 1062
                     if (($e->errorInfo[1] ?? null) == 1062) {
-                        continue;
+                        continue; // duplikat kode_persil, coba nomor berikutnya
                     }
                     throw $e;
                 }
@@ -94,7 +91,6 @@ class PersilController extends Controller
             throw new \RuntimeException('Gagal membuat kode persil unik.');
         });
 
-        // upload media
         if ($request->hasFile('media')) {
             foreach ($request->file('media') as $file) {
                 if (! $file || ! $file->isValid()) continue;
@@ -113,6 +109,12 @@ class PersilController extends Controller
         return redirect()
             ->route('persil.index')
             ->with('success', "Persil {$persil->kode_persil} berhasil ditambahkan");
+    }
+
+    public function show($id)
+    {
+        $persil = Persil::with('media')->findOrFail($id);
+        return view('pages.persil.show', compact('persil'));
     }
 
     public function edit(string $id)
@@ -148,7 +150,6 @@ class PersilController extends Controller
             'rw'               => $request->rw,
         ]);
 
-        // upload media baru
         if ($request->hasFile('media')) {
             foreach ($request->file('media') as $file) {
                 if (! $file || ! $file->isValid()) continue;
@@ -167,17 +168,12 @@ class PersilController extends Controller
         return redirect()->route('persil.index')->with('success', 'Data berhasil diperbarui');
     }
 
-    // destroyMedia punyamu biarkan, sudah oke
     public function destroy(string $id)
     {
         Persil::destroy($id);
         return redirect()->route('persil.index')->with('success', 'Data dihapus');
     }
 
-    /**
-     * Delete a single media item for a persil.
-     * Route: POST /persil/{persil}/media/{media}/delete
-     */
     public function destroyMedia($persilId, $mediaId)
     {
         $media = Media::where('media_id', $mediaId)
@@ -185,18 +181,15 @@ class PersilController extends Controller
             ->where('ref_id', $persilId)
             ->firstOrFail();
 
-        // HAPUS FILE FISIK
         if ($media->file_url && Storage::disk('public')->exists($media->file_url)) {
             Storage::disk('public')->delete($media->file_url);
         }
 
-        // HAPUS DB
         $media->delete();
 
         return redirect()
             ->back()
             ->withFragment('detail-' . $persilId)
             ->with('success', 'File berhasil dihapus');
-
     }
 }

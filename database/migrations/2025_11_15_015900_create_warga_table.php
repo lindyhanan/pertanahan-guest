@@ -12,6 +12,7 @@ return new class extends Migration
             $table->id('warga_id');
             $table->string('nama');
             $table->string('no_ktp')->unique();
+            $table->string('alamat');
             $table->string('jenis_kelamin')->nullable();
             $table->string('agama')->nullable();
             $table->string('pekerjaan')->nullable();

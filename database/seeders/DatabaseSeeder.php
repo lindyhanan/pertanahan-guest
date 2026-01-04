@@ -1,8 +1,9 @@
 <?php
+
 namespace Database\Seeders;
 
-use App\Models\User;
 use Illuminate\Database\Seeder;
+use App\Models\User;
 use Illuminate\Support\Facades\Hash;
 
 class DatabaseSeeder extends Seeder
@@ -13,11 +14,11 @@ class DatabaseSeeder extends Seeder
         // ADMIN UTAMA (AMAN DARI DUPLIKAT)
         // ===============================
         User::updateOrCreate(
-            ['email' => 'admin@gmail.com'], // kondisi
+            ['email' => 'admin@gmail.com'],
             [
                 'name'     => 'Lindy',
                 'role'     => 'admin',
-                'password' => Hash::make('linday'),
+                'password' => Hash::make('lindy'),
             ]
         );
 

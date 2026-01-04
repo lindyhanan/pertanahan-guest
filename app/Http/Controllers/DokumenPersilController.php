@@ -28,8 +28,8 @@ class DokumenPersilController extends Controller
                 $query->where('jenis_dokumen', $jenis);
             })
             ->latest()
-            ->paginate(9)       
-            ->withQueryString(); 
+            ->paginate(9)        // ⬅️ WAJIB paginate
+            ->withQueryString(); // ⬅️ BIAR FILTER TIDAK HILANG
 
         return view('pages.dokumen_persil.index', compact('dokumens'));
     }
@@ -51,17 +51,24 @@ class DokumenPersilController extends Controller
         ]);
 
         DB::transaction(function () use ($request) {
+
+            // 1️⃣ SIMPAN DOKUMEN (PAKSA SAVE)
             $dokumen                = new DokumenPersil();
             $dokumen->persil_id     = $request->persil_id;
             $dokumen->jenis_dokumen = $request->jenis_dokumen;
             $dokumen->nomor         = $request->nomor;
             $dokumen->keterangan    = $request->keterangan;
             $dokumen->save();
+
+            // 2️⃣ PAKSA AMBIL ULANG ID DARI DATABASE
             $dokumen->refresh();
 
+            // 🔥 PENGAMAN TERAKHIR
             if (! $dokumen->dokumen_id) {
                 throw new \Exception('Gagal mendapatkan dokumen_id');
             }
+
+            // 3️⃣ SIMPAN FILE
             if ($request->hasFile('files')) {
                 foreach ($request->file('files') as $file) {
 

@@ -29,12 +29,9 @@
                 </div>
 
                 <div class="card-body">
-                    <form action="{{ route('penggunaan.update', $penggunaan) }}" method="POST">
-    @csrf
-    <input type="hidden" name="_method" value="PUT">
+                    <form action="{{ url('/penggunaan/edit') }}" method="POST">
 
-    @method('PUT')
-
+                        @csrf
                         <div class="row">
                             <div class="col-md-6 mb-3">
     <label class="form-label text-secondary fw-semibold">
