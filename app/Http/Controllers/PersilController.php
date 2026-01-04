@@ -1,100 +1,103 @@
 <?php
+
 namespace App\Http\Controllers;
 
 use App\Models\Media;
 use App\Models\Persil;
 use App\Models\Penggunaan;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
 
 class PersilController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
     public function index(Request $request)
-    {
-        $search  = $request->query('search');
-        $pemilik = $request->query('pemilik');
-        $alamat  = $request->query('alamat');
-
-        $persil = Persil::query()
-            ->when($search, function ($query, $search) {
-                $query->where('kode_persil', 'like', "%{$search}%")
-                    ->orWhere('alamat_lahan', 'like', "%{$search}%");
-            })
-            ->when($pemilik, function ($query, $pemilik) {
-                $query->where('pemilik_warga_id', $pemilik);
-            })
-            ->when($alamat, function ($query, $alamat) {
-                $query->where('alamat_lahan', 'like', "%{$alamat}%");
-            })
-            ->orderBy('kode_persil')
-            ->paginate(9)        // tampil 9 persil per halaman
-            ->withQueryString(); // menjaga query tetap ada saat pagination
-
-        return view('pages.persil.index', compact('persil', 'search', 'pemilik', 'alamat'));
-    }
-
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
 {
-    // Ambil nomor terbesar dari kode_persil (misal P001 -> 1, P120 -> 120)
-    $maxNo = Persil::selectRaw("MAX(CAST(SUBSTRING(kode_persil, 2) AS UNSIGNED)) as max_no")
-        ->value('max_no');
+    $search  = $request->query('search');
+    $pemilik = $request->query('pemilik');
+    $alamat  = $request->query('alamat');
 
-    $nextNumber = ($maxNo ?? 0) + 1;
+    $persil = Persil::query()
+        ->when($search, function ($query, $search) {
+            $query->where('kode_persil', 'like', "%{$search}%")
+                ->orWhere('alamat_lahan', 'like', "%{$search}%");
+        })
+        ->when($pemilik, function ($query, $pemilik) {
+            $query->where('pemilik_warga_id', $pemilik);
+        })
+        ->when($alamat, function ($query, $alamat) {
+            $query->where('alamat_lahan', 'like', "%{$alamat}%");
+        })
+        ->orderBy('kode_persil')
+        ->paginate(9)
+        ->withQueryString();
 
-    $kodePersil = 'P' . str_pad($nextNumber, 3, '0', STR_PAD_LEFT);
-
-    $penggunaanList = Penggunaan::orderBy('nama_penggunaan')->get();
-
-    return view('pages.persil.create', compact('kodePersil', 'penggunaanList'));
+    return view('pages.persil.index', compact('persil', 'search', 'pemilik', 'alamat'));
 }
 
+    public function create()
+    {
+        // untuk tampilan saja (perkiraan). Kode final dibuat di store()
+        $maxNo = Persil::selectRaw("MAX(CAST(SUBSTRING(kode_persil, 2) AS UNSIGNED)) as max_no")
+            ->value('max_no');
 
-    /**
-     * Store a newly created resource in storage.
-     */
-    public function store(Request $request)
-{
-    //  dd('MASUK STORE', $request->all());
-    $request->validate([
-       'kode_persil' => 'required|unique:persil,kode_persil', 
-    'pemilik_warga_id' => 'required|exists:warga,warga_id',
-    'luas_m2'          => 'required|numeric',
-    'penggunaan_id'    => 'required|exists:penggunaan,jenis_id',
-    'alamat_lahan'     => 'required',
-        'rt'               => 'nullable',
-        'rw'               => 'nullable',
-        'media.*'          => 'nullable|file|mimes:jpg,jpeg,png,pdf|max:5120',
-    ]);
+        $nextNumber = ($maxNo ?? 0) + 1;
+        $kodePersil = 'P' . str_pad($nextNumber, 3, '0', STR_PAD_LEFT);
 
-    $lastPersil = Persil::orderBy('persil_id', 'desc')->first();
-    if ($lastPersil && preg_match('/P(\d+)/', $lastPersil->kode_persil, $match)) {
-        $nextNumber = (int) $match[1] + 1;
-    } else {
-        $nextNumber = 1;
+        $penggunaanList = Penggunaan::orderBy('nama_penggunaan')->get();
+
+        return view('pages.persil.create', compact('kodePersil', 'penggunaanList'));
     }
-    $kodePersil = 'P' . str_pad($nextNumber, 3, '0', STR_PAD_LEFT);
 
-    Persil::create([
-    'kode_persil'      => $kodePersil,
-    'pemilik_warga_id' => $request->pemilik_warga_id,
-    'luas_m2'          => $request->luas_m2,
-    'penggunaan_id'    => $request->penggunaan_id, // INI WAJIB
-    'alamat_lahan'     => $request->alamat_lahan,
-    'rt'               => $request->rt,
-    'rw'               => $request->rw,
-]);
+    public function store(Request $request)
+    {
+        $request->validate([
+            'pemilik_warga_id' => 'required|exists:warga,warga_id',
+            'luas_m2'          => 'required|numeric',
+            'penggunaan_id'    => 'required|exists:penggunaan,jenis_id',
+            'alamat_lahan'     => 'required',
+            'rt'               => 'nullable',
+            'rw'               => 'nullable',
+            'media.*'          => 'nullable|file|mimes:jpg,jpeg,png,pdf|max:5120',
+        ]);
 
+        $persil = DB::transaction(function () use ($request) {
+            // ambil nomor terbesar dari kode_persil
+            $maxNo = Persil::selectRaw("MAX(CAST(SUBSTRING(kode_persil, 2) AS UNSIGNED)) as max_no")
+                ->value('max_no');
+
+            $nextNumber = ($maxNo ?? 0) + 1;
+
+            // retry kalau kebetulan tabrakan (misal submit barengan)
+            for ($i = 0; $i < 20; $i++) {
+                $kodePersil = 'P' . str_pad($nextNumber + $i, 3, '0', STR_PAD_LEFT);
+
+                try {
+                    return Persil::create([
+                        'kode_persil'      => $kodePersil,
+                        'pemilik_warga_id' => $request->pemilik_warga_id,
+                        'luas_m2'          => $request->luas_m2,
+                        'penggunaan_id'    => $request->penggunaan_id,
+                        'alamat_lahan'     => $request->alamat_lahan,
+                        'rt'               => $request->rt,
+                        'rw'               => $request->rw,
+                    ]);
+                } catch (\Illuminate\Database\QueryException $e) {
+                    // MySQL duplicate key = 1062
+                    if (($e->errorInfo[1] ?? null) == 1062) {
+                        continue;
+                    }
+                    throw $e;
+                }
+            }
+
+            throw new \RuntimeException('Gagal membuat kode persil unik.');
+        });
+
+        // upload media
         if ($request->hasFile('media')) {
             foreach ($request->file('media') as $file) {
-                if (! $file || ! $file->isValid()) {
-                    continue;
-                }
+                if (! $file || ! $file->isValid()) continue;
 
                 $path = $file->store('media', 'public');
 
@@ -109,73 +112,54 @@ class PersilController extends Controller
 
         return redirect()
             ->route('persil.index')
-            ->with('success', "Persil {$kodePersil} berhasil ditambahkan");
+            ->with('success', "Persil {$persil->kode_persil} berhasil ditambahkan");
     }
 
-    /**
-     * Display the specified resource.
-     */
-    public function show($id)
-    {
-        $persil = Persil::with('media')->findOrFail($id);
-        return view('pages.persil.show', compact('persil'));
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     */
     public function edit(string $id)
     {
         $persil = Persil::findOrFail($id);
-
-        // ambil list penggunaan untuk dropdown
         $penggunaanList = Penggunaan::orderBy('nama_penggunaan')->get();
 
         return view('pages.persil.edit', compact('persil', 'penggunaanList'));
     }
 
-/**
- * Update the specified resource in storage.
- */
     public function update(Request $request, string $id)
-{
-    $persil = Persil::findOrFail($id);
+    {
+        $persil = Persil::findOrFail($id);
 
-    $request->validate([
-        'pemilik_warga_id' => 'required|exists:warga,warga_id',
-        'luas_m2'          => 'required|numeric',
-        'jenis_id'         => 'required|exists:penggunaan,jenis_id', // ✅ FIX: sesuai form
-        'alamat_lahan'     => 'required',
-        'rt'               => 'nullable',
-        'rw'               => 'nullable',
-        'media.*'          => 'nullable|file|mimes:jpg,jpeg,png,pdf|max:5120',
-    ]);
+        $request->validate([
+            'kode_persil'      => 'required|unique:persil,kode_persil,' . $persil->persil_id . ',persil_id',
+            'pemilik_warga_id' => 'required|exists:warga,warga_id',
+            'luas_m2'          => 'required|numeric',
+            'penggunaan_id'    => 'required|exists:penggunaan,jenis_id',
+            'alamat_lahan'     => 'required',
+            'rt'               => 'nullable',
+            'rw'               => 'nullable',
+            'media.*'          => 'nullable|file|mimes:jpg,jpeg,png,pdf|max:5120',
+        ]);
 
-    $persil->update([
-        'pemilik_warga_id' => $request->pemilik_warga_id,
-        'luas_m2'          => $request->luas_m2,
-        'penggunaan_id'    => $request->jenis_id, // ✅ mapping ke kolom DB
-        'alamat_lahan'     => $request->alamat_lahan,
-        'rt'               => $request->rt,
-        'rw'               => $request->rw,
-    ]);
+        $persil->update([
+            'kode_persil'      => $request->kode_persil,
+            'pemilik_warga_id' => $request->pemilik_warga_id,
+            'luas_m2'          => $request->luas_m2,
+            'penggunaan_id'    => $request->penggunaan_id,
+            'alamat_lahan'     => $request->alamat_lahan,
+            'rt'               => $request->rt,
+            'rw'               => $request->rw,
+        ]);
 
-        // Tambah file baru jika ada
+        // upload media baru
         if ($request->hasFile('media')) {
             foreach ($request->file('media') as $file) {
-                if (! $file->isValid()) {
-                    continue;
-                }
+                if (! $file || ! $file->isValid()) continue;
 
                 $path = $file->store('media', 'public');
 
                 Media::create([
-                    'ref_table'  => 'persil',
-                    'ref_id'     => $persil->persil_id,
-                    'file_url'   => $path,
-                    'caption'    => null,
-                    'mime_type'  => $file->getClientMimeType(),
-                    'sort_order' => 0,
+                    'ref_table' => 'persil',
+                    'ref_id'    => $persil->persil_id,
+                    'file_url'  => $path,
+                    'mime_type' => $file->getClientMimeType(),
                 ]);
             }
         }
@@ -183,9 +167,7 @@ class PersilController extends Controller
         return redirect()->route('persil.index')->with('success', 'Data berhasil diperbarui');
     }
 
-    /**
-     * Remove the specified resource from storage.
-     */
+    // destroyMedia punyamu biarkan, sudah oke
     public function destroy(string $id)
     {
         Persil::destroy($id);
